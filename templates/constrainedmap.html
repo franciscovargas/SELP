@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8 />
+	<title>A simple map</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
+	<style>
+	  body { margin:0; padding:0; }
+	  #map {display:block;
+			margin-left:auto;
+			margin-right: auto;
+			margin-top: 150px;
+			height: 600px;
+			width: 100%;
+			background-color: #000; }
+	</style>
+</head>
+<body>
+
+	<div id='map'></div>
+	<script>
+		L.mapbox.accessToken = 'pk.eyJ1IjoidmFyZ2ZyYW4iLCJhIjoiRW44bEMyQSJ9.i3kosn_djpsoR6Qy4TO0Vw#15';
+		var southWest = L.latLng(55.874962, -3.404167),
+		    northEast = L.latLng(55.988625, -3.096550),
+		    bounds = L.latLngBounds(southWest, northEast);
+		var map = L.mapbox.map('map', 'vargfran.k7hmm8gm', {
+    maxBounds: bounds,
+    maxZoom: 19,
+    minZoom: 10
+})
+		    .setView([ 55.944, -3.192], 15);
+	</script>
+
+</body>
+</html>
+
