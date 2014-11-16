@@ -6,7 +6,7 @@
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 	<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
 	<!-- <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' /> -->
-
+	<script src="/home/francisco/selp/SELP/static/jquery-1.11.1.min.js"></script>
 	<link rel="stylesheet" href="/home/francisco/selp/SELP/static/leaflet/leaflet.css" />
 	<style>
 	  body { margin:0; padding:0; }
@@ -59,14 +59,45 @@
 
 	var popup = L.popup();
 
-	function onMapClick(e) {
-		popup
-			.setLatLng(e.latlng)
-			.setContent("You clicked the map at " + e.latlng.toString())
-			.openOn(map);
-	}
+	// Parse lat long 
+	function parseLatLong(latStr){
+		var n = latStr.length;
+		var outStr = "";
+		for(i = 0; i < n; i ++){
+			if(!isNaN(latStr[i]) || latStr[i]===',' || latStr[i]==='.'  || latStr[i]==='-' ){
+				outStr += latStr[i];
+			}
+		}
+		return outStr;
+	};
 
-	map.on('click', onMapClick);
+	// String.format function to be used 
+	// for address fetching
+	String.prototype.format = function() {
+    var formatted = this;
+    for( var arg in arguments ) {
+        formatted = formatted.replace("{" + arg + "}", arguments[arg]);
+    }
+    return formatted;
+    };
+
+    function getAddress(e){
+    	var latLong = parseLatLong(e.latlng.toString()).split(",");
+    	//console.log(latLong);
+    	var api_call = "http://maps.googleapis.com/maps/api/geocode/json?latlng={0},{1}&sensor=true"
+    	var url = api_call.format(latLong[0],latLong[1]);
+    	console.log(url);
+    	jQuery.getJSON(url).done([function(data){ 
+    			var address = data["results"][0]["formatted_address"];
+    			popup
+			.setLatLng(e.latlng)
+			.setContent(address)
+			.openOn(map);
+
+    			}]);
+    }
+
+	map.on('click', getAddress);
 
 	</script>
 
