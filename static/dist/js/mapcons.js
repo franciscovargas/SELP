@@ -18,7 +18,7 @@
       fillOpacity: 1    // Fill opacity
   };
 
-   var circle_one = L.circle([ 55.944, -3.192], 20, circle_options).addTo(featureGroup);
+   //var circle_one = L.circle([ 55.944, -3.192], 20, circle_options).addTo(featureGroup);
     var drawControl = new L.Control.Draw({
     edit: {
       featureGroup: featureGroup
