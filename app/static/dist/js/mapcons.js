@@ -31,7 +31,7 @@
 
 	var popup = L.popup();
 
-	// Parse lat long 
+	// Parse lat long
 	function parseLatLong(latStr){
 		var n = latStr.length;
 		var outStr = "";
@@ -43,7 +43,7 @@
 		return outStr;
 	};
 
-	// String.format function to be used 
+	// String.format function to be used
 	// for address fetching
 	String.prototype.format = function() {
     var formatted = this;
@@ -56,11 +56,11 @@
     function getAddress(e){
     	var latLong = parseLatLong(e.latlng.toString()).split(",");
     	//console.log(latLong);
-    	var api_call = "http://maps.googleapis.com/maps/api/geocode/json?latlng={0},{1}&sensor=true"
+    	var api_call = "http://nominatim.openstreetmap.org/reverse?format=json&lat={0}&lon={1}&zoom=18&addressdetails=1"
     	var url = api_call.format(latLong[0],latLong[1]);
     	console.log(url);
-    	jQuery.getJSON(url).done([function(data){ 
-    			var address = data["results"][0]["formatted_address"];
+    	jQuery.getJSON(url).done([function(data){
+    			var address = data["display_name"];
     			popup
 			.setLatLng(e.latlng)
 			.setContent(address)
