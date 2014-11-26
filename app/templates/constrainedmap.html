@@ -5,11 +5,11 @@
 	<title>Mapov</title>
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 	<link rel="shortcut icon" href="/favicon.ico">
-	<link href="/static/dist/css/bootstrap.css" rel="stylesheet">
+	<link href="{{url_for('static',filename='dist/css/bootstrap.css')}}" rel="stylesheet">
 	<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
 	<!-- <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' /> -->
-	<script src="/static/jquery-1.11.1.min.js"></script>
-	<link rel="stylesheet" href="/static/leaflet/leaflet.css" />
+	<script src="{{url_for('static',filename='jquery-1.11.1.min.js')}}"></script>
+	<link rel="stylesheet" href="{{url_for('static',filename='leaflet/leaflet.css')}}" />
 	<style>
 	  html, body, .container-fluid, .content, .content > * {
     height: 100% !important;}
@@ -23,13 +23,13 @@
 <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#"><img src="/static/img/brand.png" width="60"></a>
+          <a class="navbar-brand" href="#"><img src="{{url_for('static',filename='img/brand.png')}}" width="60"></a>
           <a class="navbar-brand" href="#">M@pov</a>
         </div>
         <div>
           <ul class="nav navbar-nav">
             <li><a href="#">About</a></li>
-            <li><a href="/templates/login.html">Sign in</a></li>
+            <li><a href="/">Sign in</a></li>
           </ul>
         </div>
       <div class="nav navbar-right navbar-collapse collapse">
@@ -53,7 +53,7 @@
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
 
 	<div id='map'></div>
-	<script src="/static/dist/js/mapcons.js"></script>
+	<script src="{{url_for('static',filename='dist/js/mapcons.js')}}"></script>
 </body>
 </html>
 
