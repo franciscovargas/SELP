@@ -16,7 +16,6 @@
     	    <div class="col-xs-12">
         	    <div class="form-wrap">
                 <h2>Log in with your email account</h2>
-                {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
 			<form action="{{ url_for('login') }}" method=post>
                             <div class="form-group">
                               <label for="email" class="sr-only">Email</label>
@@ -24,7 +23,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="key" class="sr-only">Password</label>
-                                <input type="password" name="key" id="key" class="form-control" placeholder="Password">
+                                <input type="text" name="key" id="key" class="form-control" placeholder="Password">
                             </div>
                         <div class="checkbox">
                             <span class="character-checkbox" onclick="showPassword()"></span>
@@ -36,7 +35,7 @@
                     <a href="file:/home/francisco/selp/SELP/templates/signup.html" class="forget" data-toggle="modal" data-target=".forget-modal">New user, sign up?</a>
                     <hr>
         	    </div>
-    		</div> 
+    		</div>
     	</div>
     </div>
 </section>
