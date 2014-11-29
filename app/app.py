@@ -1,4 +1,5 @@
 # imports
+import functools
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
     abort, render_template, flash, views
@@ -23,31 +24,34 @@ class Login(views.MethodView):
         return render_template('login.html')
 
     def post(self):
-        print "test 1"
         if 'logout' in request.form:
             session.pop('username', None)
             return redirect(url_for('login'))
         required = ['username', 'password']
-        print "test why"
         # for r in required:
         #     if r not in request.form:
         #         flash("Error: {0} is required.".format(r))
         #         return redirect(url_for('index'))
-        print 0
         username = request.form['email']
-        print 1
         passwd = request.form['key']
         print passwd, username
         if username in users and users[username] == passwd:
-            print "test2"
             session['username'] = username
             return redirect(url_for('constrainedmap'))
         else:
-            print "come on !!"
             flash("Username doesn't exist or incorrect password")
-            print "flash?"
             return redirect(url_for('login'))
 
+
+def login_required(method):
+    @functools.wraps(method)
+    def wrapper(*args, **kwargs):
+        if 'username' in session:
+            return method(*args, **kwargs)
+        else:
+            flash("A login is required to see the page!")
+            return redirect(url_for('index'))
+    return wrapper
 
 
 class Main(views.MethodView):
