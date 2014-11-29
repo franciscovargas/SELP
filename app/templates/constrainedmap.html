@@ -29,7 +29,11 @@
         <div>
           <ul class="nav navbar-nav">
             <li><a href="#">About</a></li>
-            <li><a href="/">Sign in</a></li>
+           {% if not session.logged_in %}
+             <li><a href="{{ url_for('login') }}">Sign in</a></li>
+           {% else %}
+             <li><a href="{{ url_for('logout') }}">Sign out</a></li>
+           {% endif %}
           </ul>
         </div>
       <div class="nav navbar-right navbar-collapse collapse">
