@@ -1,19 +1,58 @@
 # imports
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
-    abort, render_template, flash
+    abort, render_template, flash, views
 from contextlib import closing
 
 # confifuration instructions
 DATABASE = '/tmp/app.db'
 DEBUG = True
-SECRETE_KEY = 'development_key'
+SECRET_KEY = 'development_key'
 USERNAME = 'admin'
 PASSWORD = 'default'
-
+# temporary test database
+users = {'test1@gmail.com': '1'}
+# login_manager = LoginManager()
 # application initiation
 app = Flask(__name__)
 app.config.from_object(__name__)
+
+
+class Login(views.MethodView):
+    def get(self):
+        return render_template('login.html')
+
+    def post(self):
+        print "test 1"
+        if 'logout' in request.form:
+            session.pop('username', None)
+            return redirect(url_for('login'))
+        required = ['username', 'password']
+        print "test why"
+        # for r in required:
+        #     if r not in request.form:
+        #         flash("Error: {0} is required.".format(r))
+        #         return redirect(url_for('index'))
+        print 0
+        username = request.form['email']
+        print 1
+        passwd = request.form['key']
+        print passwd, username
+        if username in users and users[username] == passwd:
+            print "test2"
+            session['username'] = username
+            return redirect(url_for('constrainedmap'))
+        else:
+            print "come on !!"
+            flash("Username doesn't exist or incorrect password")
+            print "flash?"
+            return redirect(url_for('login'))
+
+
+
+class Main(views.MethodView):
+    def get(self):
+        return render_template('constrainedmap.html')
 
 
 def connect_db():
@@ -39,38 +78,41 @@ def teardown_request(exception):
         db.close()
 
 
-@app.route('/')
-def show_entries():
-    # cur = g.db.execute('select title, text from entries order by id desc')
-    # entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
-    # return render_template('show_entries.html', entries=entries)
-    return render_template('constrainedmap.html')
+# @app.route('/')
+# def show_entries():
+#     # cur = g.db.execute('select title, text from entries order by id desc')
+#     # entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
+#     # return render_template('show_entries.html', entries=entries)
+#     return render_template('constrainedmap.html')
 
 
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     error = None
+#     if request.method == 'POST':
+#         if request.form['username'] != app.config['USERNAME']:
+#             error = 'Invalid username'
+#         elif request.form['password'] != app.config['PASSWORD']:
+#             error = 'Invalid password'
+#         else:
+#             session['logged_in'] = True
+#             flash('You were logged in')
+#             return redirect(url_for('show_entries'))
+#     return render_template('login.html', error=error)
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('show_entries'))
-    return render_template('login.html', error=error)
+app.add_url_rule('/login',
+                 view_func=Login.as_view('login'),
+                 methods=["GET", "POST"])
 
+app.add_url_rule('/',
+                 view_func=Main.as_view('constrainedmap'),
+                 methods=["GET", "POST"])
 
-
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    flash('You were logged out')
-    return redirect(url_for('show_entries'))
-
-
+# @app.route('/logout')
+# def logout():
+#     session.pop('logged_in', None)
+#     flash('You were logged out')
+#     return redirect(url_for('show_entries'))
 
 
 if __name__ == '__main__':
