@@ -34,12 +34,16 @@
              <li><a href="{{ url_for('login') }}">Sign in</a></li>
            {% else %}
              <li><a href="{{ url_for('logout') }}">Sign out</a></li>
-           {% endif %}
+					{% endif %}
           </ul>
         </div>
       <div class="nav navbar-right navbar-collapse collapse">
-        <a href="/" class="btn btn-primary navbar-btn">Craft Path</a>
-      </div>
+				{% if not session.logged_in %}
+        	<a href="{{ url_for('login') }}" class="btn btn-primary navbar-btn">Craft Path</a>
+				{% else %}
+					<a href="/" class="btn btn-primary navbar-btn">Craft Path</a>
+    	  {% endif %}
+	  </div>
       <form class="navbar-form navbar-left" role="search">
           <div class="form-group">
               <input type="text" class="form-control" placeholder="Start point">

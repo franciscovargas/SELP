@@ -1,12 +1,12 @@
 <html>
 <head>
     <meta charset=utf-8 />
-    <title>Mapov</title>
+    <title>Sign up</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <link href="/home/francisco/selp/SELP/static/dist/css/bootstrap.css" rel="stylesheet">
-    <link href="/home/francisco/selp/SELP/static/dist/css/login.css" rel="stylesheet">
-    <script src="/home/francisco/selp/SELP/static/jquery-1.11.1.min.js"></script>
-    <script src="/home/francisco/selp/SELP/static/dist/js/login.js"></script>
+    <link href="{{url_for('static',filename='dist/css/bootstrap.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='dist/css/login.css')}}" rel="stylesheet">
+    <script src="{{url_for('static',filename='jquery-1.11.1.min.js')}}"></script>
+    <script src="{{url_for('static',filename='dist/js/login.js')}}"></script>
 </head>
 <section id="login">
     <div class="container">
@@ -27,17 +27,13 @@
                             <label for="key" class="sr-only">Password2</label>
                             <input type="password" name="key" id="key" class="form-control" placeholder="Type pasword again">
                         </div>
-                        <!-- <div class="checkbox">
-                            <span class="character-checkbox" onclick="showPassword()"></span>
-                            <span class="label">Show password</span>
-                        </div> -->
                         <input type="submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Sign up">
                     </form>
                     <hr>
         	    </div>
-    		</div> <!-- /.col-xs-12 -->
-    	</div> <!-- /.row -->
-    </div> <!-- /.container -->
+    		</div>
+    	</div>
+    </div>
 </section>
 
 
