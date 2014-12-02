@@ -17,7 +17,6 @@ USERNAME = 'admin'
 PASSWORD = 'default'
 # temporary test database
 users = {'test1@gmail.com': '1'}
-# login_manager = LoginManager()
 # application initiation
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -40,6 +39,52 @@ def ssl_required(fn):
     return decorated_view
 
 
+###############################################################################
+#                        NON URL CLASSES                                      #
+###############################################################################
+
+
+class RegistrationForm(Form):
+    """
+    Registration form validation class
+    """
+    email = EmailField('email', [
+        validators.Length(min=1, max=35),
+        validators.Required()
+        ])
+    addr = TextField('addr', [
+        validators.Length(min=1, max=35),
+        validators.Required()
+        ])
+    key = TextField('key', [
+        validators.Required(),
+        validators.EqualTo('key2', message='Passwords must match')
+        ])
+    key2 = TextField('key2')
+
+
+class User(object):
+    """
+    Password salting class
+    """
+
+    def __init__(self, username, password, addr=''):
+        self.username = username
+        self.set_password(password)
+        self.addr = addr
+
+    def set_password(self, password):
+        self.pw_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.pw_hash, password)
+
+
+###############################################################################
+#                        END                                                  #
+###############################################################################
+
+
 class Login(views.MethodView):
     @ssl_required
     def get(self):
@@ -55,19 +100,29 @@ class Login(views.MethodView):
         if 'logout' in request.form:
             session.pop('username', None)
             return redirect(url_for('login'))
-        # required = ['username', 'password']
-        # for r in required:
-        #     if r not in request.form:
-        #         flash("Error: {0} is required.".format(r))
-        #         return redirect(url_for('index'))
         username = request.form['email']
         passwd = request.form['key']
-        if username in users and users[username] == passwd:
-            session['logged_in'] = True
-            session['username'] = username
-            return redirect(url_for('constrainedmap'))
+        user = User(username, passwd)
+        query = """SELECT user.password
+                   FROM user
+                   WHERE user.user = ?;
+                """
+        cur = get_db().cursor()
+        print user.username
+        cur.execute(query, (user.username,))
+        result = cur.fetchall()
+        print len(result) > 0
+        if len(result) > 0:
+            user.pw_hash = result[0][0]
+            if user.check_password(passwd):
+                session['logged_in'] = True
+                session['username'] = user.username
+                return redirect(url_for('constrainedmap'))
+            else:
+                flash(" Incorrect password")
+                return redirect(url_for('login'))
         else:
-            flash("Username doesn't exist or incorrect password")
+            flash("Username doesn't exist")
             return redirect(url_for('login'))
 
 
@@ -114,51 +169,16 @@ class SignUp(views.MethodView):
             flash("Required fields missing")
             return redirect(url_for('signup'))
         else:
+            user = User(username, passwd, address)
             cur = get_db().cursor()
+            print passwd
+            print user.pw_hash
             cur.execute("""INSERT INTO user(user, password, postcode)
-                           VALUES (?, ?, ?);""", (username, address, passwd))
+                           VALUES (?, ?, ?);""", (user.username,
+                                                  user.pw_hash,
+                                                  user.addr))
             get_db().commit()
             return redirect(url_for('constrainedmap'))
-
-
-###############################################################################
-#                        NON URL CLASSES                                      #
-###############################################################################
-
-
-class RegistrationForm(Form):
-    """
-    Registration form validation class
-    """
-    email = EmailField('email', [
-        validators.Length(min=1, max=35),
-        validators.Required()
-        ])
-    addr = TextField('addr', [
-        validators.Length(min=1, max=35),
-        validators.Required()
-        ])
-    key = TextField('key', [
-        validators.Required(),
-        validators.EqualTo('key2', message='Passwords must match')
-        ])
-    key2 = TextField('key2')
-
-
-class User(object):
-    """
-    Password salting class
-    """
-
-    def __init__(self, username, password):
-        self.username = username
-        self.set_password(password)
-
-    def set_password(self, password):
-        self.pw_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.pw_hash, password)
 
 
 def connect_db():
