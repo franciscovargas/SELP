@@ -107,6 +107,9 @@ class SignUp(views.MethodView):
 
 
 class RegistrationForm(Form):
+    """
+    Registration form validation class
+    """
     email = EmailField('email', [
         validators.Length(min=1, max=35),
         validators.Required()
@@ -185,7 +188,7 @@ app.add_url_rule('/signup',
 
 
 if __name__ == '__main__':
-    #init_db()
+    init_db()
     app.run()
     # with app.app_context():
     #     cur = get_db().cursor()
