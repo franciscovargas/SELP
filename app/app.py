@@ -2,7 +2,7 @@
 import functools
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
-    abort, render_template, flash, views
+    abort, render_template, flash, views, current_app
 from werkzeug.security import generate_password_hash, \
     check_password_hash
 from wtforms import Form, BooleanField, TextField, PasswordField, validators
@@ -23,14 +23,34 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 
+def ssl_required(fn):
+    """
+    Decorator for https redirection in inscure http
+    pages such as login and sigup
+    """
+    @functools.wraps(fn)
+    def decorated_view(*args, **kwargs):
+        if current_app.config.get("SSL"):
+            if request.is_secure:
+                return fn(*args, **kwargs)
+            else:
+                return redirect(request.url.replace("http://", "https://"))
+        return fn(*args, **kwargs)
+
+    return decorated_view
+
+
 class Login(views.MethodView):
+    @ssl_required
     def get(self):
         print "####################"
         cur = get_db().cursor()
         cur.execute(" SELECT * FROM user;")
         print cur.fetchall()
+        redirect(request.url.replace("http://", "https://"))
         return render_template('login.html')
 
+    @ssl_required
     def post(self):
         if 'logout' in request.form:
             session.pop('username', None)
@@ -45,7 +65,6 @@ class Login(views.MethodView):
         if username in users and users[username] == passwd:
             session['logged_in'] = True
             session['username'] = username
-            print session
             return redirect(url_for('constrainedmap'))
         else:
             flash("Username doesn't exist or incorrect password")
@@ -77,10 +96,11 @@ class LogOut(views.MethodView):
 
 
 class SignUp(views.MethodView):
-
+    @ssl_required
     def get(self):
         return render_template('signup.html')
 
+    @ssl_required
     def post(self):
         form = RegistrationForm(request.form)
         username = form.email.data
