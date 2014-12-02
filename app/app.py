@@ -3,10 +3,14 @@ import functools
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
     abort, render_template, flash, views
+from werkzeug.security import generate_password_hash, \
+    check_password_hash
+from wtforms import Form, BooleanField, TextField, PasswordField, validators
+from flask.ext.wtf.html5 import EmailField
 from contextlib import closing
 
 # confifuration instructions
-DATABASE = '/tmp/app.db'
+DATABASE = 'app.db'
 DEBUG = True
 SECRET_KEY = 'development_key'
 USERNAME = 'admin'
@@ -21,6 +25,10 @@ app.config.from_object(__name__)
 
 class Login(views.MethodView):
     def get(self):
+        print "####################"
+        cur = get_db().cursor()
+        cur.execute(" SELECT * FROM user;")
+        print cur.fetchall()
         return render_template('login.html')
 
     def post(self):
@@ -73,6 +81,62 @@ class SignUp(views.MethodView):
     def get(self):
         return render_template('signup.html')
 
+    def post(self):
+        form = RegistrationForm(request.form)
+        username = form.email.data
+        address = form.addr.data
+        passwd = form.key.data
+        passwd2 = form.key2.data
+        if passwd2 != passwd:
+            flash("Passwords do not match")
+            return redirect(url_for('signup'))
+        elif not form.validate():
+            flash("Required fields missing")
+            return redirect(url_for('signup'))
+        else:
+            cur = get_db().cursor()
+            cur.execute("""INSERT INTO user(user, password, postcode)
+                           VALUES (?, ?, ?);""", (username, address, passwd))
+            get_db().commit()
+            return redirect(url_for('constrainedmap'))
+
+
+###############################################################################
+#                        NON URL CLASSES                                      #
+###############################################################################
+
+
+class RegistrationForm(Form):
+    email = EmailField('email', [
+        validators.Length(min=1, max=35),
+        validators.Required()
+        ])
+    addr = TextField('addr', [
+        validators.Length(min=1, max=35),
+        validators.Required()
+        ])
+    key = TextField('key', [
+        validators.Required(),
+        validators.EqualTo('key2', message='Passwords must match')
+        ])
+    key2 = TextField('key2')
+
+
+class User(object):
+    """
+    Password salting class
+    """
+
+    def __init__(self, username, password):
+        self.username = username
+        self.set_password(password)
+
+    def set_password(self, password):
+        self.pw_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.pw_hash, password)
+
 
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
@@ -83,6 +147,13 @@ def init_db():
         with app.open_resource('schema.sql', mode='r') as f:
             db.cursor().executescript(f.read())
             db.commit()
+
+
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = connect_db()
+    return db
 
 
 @app.before_request
@@ -113,7 +184,11 @@ app.add_url_rule('/signup',
                  methods=["GET", "POST"])
 
 
-
-
 if __name__ == '__main__':
+    #init_db()
     app.run()
+    # with app.app_context():
+    #     cur = get_db().cursor()
+    #     a = cur.execute("INSERT INTO user(user, password, postcode) VALUES ('test@gmail.com', 'pass','EH9');")
+    #     b = cur.execute(" SELECT * FROM user;")
+    #     c = cur.fetchall()
