@@ -7,6 +7,7 @@
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 	<link rel="shortcut icon" href="/favicon.ico">
 	<link href="{{url_for('static',filename='dist/css/bootstrap.css')}}" rel="stylesheet">
+	<link href="{{url_for('static',filename='dist/css//simple-sidebar.css')}}" rel="stylesheet">
 	<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
 	<!-- <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' /> -->
 	<script src="{{url_for('static',filename='jquery-1.11.1.min.js')}}"></script>
@@ -57,6 +58,40 @@
       </form>
       </div>
     </nav>
+	<div id="wrapper">
+
+			<!-- Sidebar -->
+			<div id="sidebar-wrapper">
+					<ul class="sidebar-nav">
+							<li class="sidebar-brand">
+									<a href="#">
+											Start Bootstrap
+									</a>
+							</li>
+							<li>
+									<a href="#">Dashboard</a>
+							</li>
+							<li>
+									<a href="#">Shortcuts</a>
+							</li>
+							<li>
+									<a href="#">Overview</a>
+							</li>
+							<li>
+									<a href="#">Events</a>
+							</li>
+							<li>
+									<a href="#">About</a>
+							</li>
+							<li>
+									<a href="#">Services</a>
+							</li>
+							<li>
+									<a href="#">Contact</a>
+							</li>
+					</ul>
+			</div>
+	</div>
 
 <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>

@@ -135,7 +135,7 @@ def login_required(method):
             return method(*args, **kwargs)
         else:
             flash("A login is required to see the page!")
-            return redirect(url_for('index'))
+            return redirect(url_for('constrainedmap'))
     return wrapper
 
 

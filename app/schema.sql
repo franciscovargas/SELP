@@ -13,6 +13,7 @@ create table edges(
 	lat_end real not null,
 	long_start real not null,
 	long_end real not null,
+	user_id integer not null,
 	foreign key(user_id) references user(id)
 );
 
@@ -20,5 +21,6 @@ drop table if exists paths;
 create table paths(
 	id integer primary key autoincrement,
 	path text not null,
+	user_id integer not null,
 	foreign key(user_id) references user(id)
 );
