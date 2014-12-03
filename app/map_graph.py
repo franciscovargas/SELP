@@ -59,6 +59,17 @@ def decision_at_node(end_point_edge_weights):
     else:
         return 0
 
+
+def find_all_reachable_nodes(lat, long, connection):
+    """
+    This function finds all nodes which are in a radius of
+    1 km from the provided lat and long arguments
+    """
+    cur = connection.cursor()
+    cur.execute(QUERY1, (lat, lat, long))
+    return cur.fetchall()
+
+
 if __name__ == '__main__':
     r = uniform(0, 1.0)
     probabilities = (0.1, 0.2, 0.4, 0.05, 0.05, 0.2)
