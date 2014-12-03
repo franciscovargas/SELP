@@ -1,7 +1,19 @@
 from json import dumps, loads
 from random import uniform
-import numpy as np
 import matplotlib.pyplot as plt
+
+#  (lat1, lat1, long1 ) provided from click in the interactive map whilst
+# lofed in
+QUERY1 = """SELECT edges.lat_start,
+                   edges.long_start,
+                   edges.lat_end,
+                   edges.long_end
+            FROM edges
+            WHERE acos(sin(?) * sin(edges.lat_start)
+            + cos(?) * cos(Lat) * cos(Lon - (?))) * 6371 <= 1
+            ORDER BY edges.rank DESC
+            LIMIT 6;
+        """
 
 
 def stringify(map_graph):
@@ -53,6 +65,5 @@ if __name__ == '__main__':
     test = []
     for i in range(1000000):
         test += [decision_at_node(probabilities)]
-    n, bins, patches = plt.hist(test)
-    plt.plot(bins)
+    n, bins, patches = plt.hist(test, normed=True)
     plt.show()
