@@ -88,10 +88,12 @@ class User(object):
 class Login(views.MethodView):
     @ssl_required
     def get(self):
+        # small db check
         print "####################"
         cur = get_db().cursor()
         cur.execute(" SELECT * FROM user;")
         print cur.fetchall()
+        print "####################"
         redirect(request.url.replace("http://", "https://"))
         return render_template('login.html')
 
@@ -230,8 +232,3 @@ app.add_url_rule('/signup',
 if __name__ == '__main__':
     init_db()
     app.run()
-    # with app.app_context():
-    #     cur = get_db().cursor()
-    #     a = cur.execute("INSERT INTO user(user, password, postcode) VALUES ('test@gmail.com', 'pass','EH9');")
-    #     b = cur.execute(" SELECT * FROM user;")
-    #     c = cur.fetchall()
