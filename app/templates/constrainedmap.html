@@ -2,26 +2,34 @@
 <html>
 <head>
 	<meta content="utf-8" http-equiv="encoding">
-	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 	<title>Mapov</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 	<link rel="shortcut icon" href="/favicon.ico">
 	<link href="{{url_for('static',filename='dist/css/bootstrap.css')}}" rel="stylesheet">
 	<link href="{{url_for('static',filename='dist/css//simple-sidebar.css')}}" rel="stylesheet">
 	<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
-	<!-- <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' /> -->
+	<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
 	<script src="{{url_for('static',filename='jquery-1.11.1.min.js')}}"></script>
-	<link rel="stylesheet" href="{{url_for('static',filename='leaflet/leaflet.css')}}" />
+	<!-- <link rel="stylesheet" href="{{url_for('static',filename='leaflet/leaflet.css')}}" /> -->
 	<style>
-	  html, body, .container-fluid, .content, .content > * {
+	  html,  .container-fluid, .content, .content > * {
     height: 100% !important;}
+		body { margin:0; padding:0; }
 	  #map {
-    height: 100% !important;
-    margin-top: -1em;
-    margin-bottom: 1em;}
+		z-index: -1 ;
+		position: absolute;
+    height: 100% ;top:70px; bottom:0; width:100%;
+    /*margin-top: -1em;*/
+	/*margin-bottom: 1em;*/}
+	.leaflet-top{
+		top: 100px;
+	}
 	</style>
 </head>
 <body>
+
 <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -58,40 +66,32 @@
       </form>
       </div>
     </nav>
+		<!-- Sidebar -->
 	<div id="wrapper">
 
-			<!-- Sidebar -->
+
 			<div id="sidebar-wrapper">
 					<ul class="sidebar-nav">
 							<li class="sidebar-brand">
 									<a href="#">
-											Start Bootstrap
+											Account
 									</a>
 							</li>
 							<li>
 									<a href="#">Dashboard</a>
 							</li>
 							<li>
-									<a href="#">Shortcuts</a>
+									<form id="rank" >
+									</form>
+									<textarea form="rank" rows=4 columns=50>
+									</textarea>
+
 							</li>
-							<li>
-									<a href="#">Overview</a>
-							</li>
-							<li>
-									<a href="#">Events</a>
-							</li>
-							<li>
-									<a href="#">About</a>
-							</li>
-							<li>
-									<a href="#">Services</a>
-							</li>
-							<li>
-									<a href="#">Contact</a>
-							</li>
+
+
 					</ul>
 			</div>
-	</div>
+</div>
 
 <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
