@@ -16,15 +16,13 @@
 	<style>
 	  html,  .container-fluid, .content, .content > * {
     height: 100% !important;}
-		body { margin:0; padding:0; }
+		body { margin:0; padding:0;}
 	  #map {
-		z-index: -1 ;
+		z-index: 0 ;
 		position: absolute;
-    height: 100% ;top:70px; bottom:0; width:100%;
-    /*margin-top: -1em;*/
-	/*margin-bottom: 1em;*/}
+    height: 100% ;top:70px; bottom:0; width:100%;}
 	.leaflet-top{
-		top: 100px;
+		top: 2000px;
 	}
 	#text{
 		background-color: #353535;
@@ -79,10 +77,10 @@
       </form>
       </div>
     </nav>
+
+
 		<!-- Sidebar -->
 	<div id="wrapper">
-
-
 			<div id="sidebar-wrapper">
 					<ul class="sidebar-nav">
 							<li class="sidebar-brand">
@@ -93,18 +91,15 @@
 							<li>
 									<form id="rank" style="color:#adadad;">
 										    Please enter rank:
-										<!-- <div class="details"> -->
 										<input type="text" size=3 align="right" alt="submit">
 										<a href="{{ url_for('login') }}" class="btn btn-primary">submit</a>
-									<!-- </div> -->
 									</form>
 
 							</li>
-
-
 					</ul>
 			</div>
 </div>
+
 
 <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
