@@ -55,12 +55,19 @@
 
     function getAddress(e){
     	var latLong = parseLatLong(e.latlng.toString()).split(",");
-    	//console.log(latLong);
+    	console.log(latLong);
     	var api_call = "http://nominatim.openstreetmap.org/reverse?format=json&lat={0}&lon={1}&zoom=18&addressdetails=1"
     	var url = api_call.format(latLong[0],latLong[1]);
     	console.log(url);
     	jQuery.getJSON(url).done([function(data){
     			var address = data["display_name"];
+					$.ajax({
+							type: 'POST',
+							url: '/path',
+							data: {'lat' : latLong[0],
+										'long': latLong[1],
+										'addr': address}
+							});
     			popup
 			.setLatLng(e.latlng)
 			.setContent(address)

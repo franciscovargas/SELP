@@ -144,6 +144,17 @@ class Main(views.MethodView):
         return render_template('constrainedmap.html')
 
 
+class Path(views.MethodView):
+    def get(self):
+        path = True
+        return render_template('constrainedmap.html', path=path)
+
+    def post(self):
+        req = request.form
+        print req
+        return redirect(url_for('path'))
+
+
 class LogOut(views.MethodView):
 
     def get(self):
@@ -226,6 +237,11 @@ app.add_url_rule('/logout',
 
 app.add_url_rule('/signup',
                  view_func=SignUp.as_view('signup'),
+                 methods=["GET", "POST"])
+
+
+app.add_url_rule('/path',
+                 view_func=Path.as_view('path'),
                  methods=["GET", "POST"])
 
 

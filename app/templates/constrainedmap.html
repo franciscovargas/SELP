@@ -62,7 +62,7 @@
 				{% if not session.logged_in %}
         	<a href="{{ url_for('login') }}" class="btn btn-primary navbar-btn">Craft Path</a>
 				{% else %}
-					<a href="/" class="btn btn-primary navbar-btn">Craft Path</a>
+					<a href="{{ url_for('path') }}" class="btn btn-primary navbar-btn">Craft Path</a>
     	  {% endif %}
 	  </div>
       <form class="navbar-form navbar-left" role="search">
@@ -79,7 +79,7 @@
       </div>
     </nav>
 
-
+{% if session.logged_in %}
 		<!-- Sidebar -->
 	<div id="wrapper">
 			<div id="sidebar-wrapper">
@@ -89,6 +89,7 @@
 											My Paths
 									</a>
 							</li>
+							{% if path %}
 							<li>
 									<form id="rank" style="color:#adadad;">
 										    Please enter rank:
@@ -100,10 +101,11 @@
 									</form>
 
 							</li>
+							{% endif %}
 					</ul>
 			</div>
 </div>
-
+{% endif %}
 
 <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
