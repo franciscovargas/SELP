@@ -146,7 +146,7 @@ def login_required(method):
 class Main(views.MethodView):
     edges = []
     path = []
-    path_bool = [False]
+    path_bool = [False, False]
 
     def get(self):
         self.path_bool[0] = True
@@ -160,13 +160,11 @@ class Main(views.MethodView):
         print '# of nodes in edge %d' % len(self.edges)
         if len(self.edges) == 2:
             print self.edges
-            self.path_bool[0] = True
             print self.path_bool
             del self.edges[:]
             print self.path_bool
             return redirect(url_for('constrainedmap'))
         else:
-            self.path_bool[0] = False
             print len(self.edges)
             print self.path_bool
             return redirect(url_for('constrainedmap'))

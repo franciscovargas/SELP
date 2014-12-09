@@ -1,15 +1,15 @@
-		L.mapbox.accessToken = 'pk.eyJ1IjoidmFyZ2ZyYW4iLCJhIjoiRW44bEMyQSJ9.i3kosn_djpsoR6Qy4TO0Vw#15';
-		var southWest = L.latLng(55.874962, -3.404167),
-		    northEast = L.latLng(55.988625, -3.096550),
-		    bounds = L.latLngBounds(southWest, northEast);
-		var map = L.mapbox.map('map', 'vargfran.b9bd48fd', {
-    maxBounds: bounds,
-    maxZoom: 19,
-    minZoom: 10
-})
-		    .setView([ 55.944, -3.192], 15);
+	L.mapbox.accessToken = 'pk.eyJ1IjoidmFyZ2ZyYW4iLCJhIjoiRW44bEMyQSJ9.i3kosn_djpsoR6Qy4TO0Vw#15';
+	var southWest = L.latLng(55.874962, -3.404167),
+	    northEast = L.latLng(55.988625, -3.096550),
+	    bounds = L.latLngBounds(southWest, northEast);
+	var map = L.mapbox.map('map', 'vargfran.b9bd48fd', {
+					    maxBounds: bounds,
+					    maxZoom: 19,
+					    minZoom: 10
+					}).setView([ 55.944, -3.192], 15);
     var featureGroup = L.featureGroup().addTo(map);
     var clickCount = 0;
+    var craftPath = false;
 
 	var circle_options = {
       color: '#fff',      // Stroke color
@@ -58,13 +58,27 @@
     function getAddress(e){
 		// var bol =  {{ path_bool }} ;
 		// console.log(bol);
-		console.log(p);
+		// console.log(p);
 		var bol = $.parseJSON(p[0]);
-		console.log(bol);
+		// console.log(bol);
+		// console.log(craftPath);
+		// console.log(clickCount);
+		// console.log(bol);
     	var latLong = parseLatLong(e.latlng.toString()).split(",");
     	var api_call = "http://nominatim.openstreetmap.org/reverse?format=json&lat={0}&lon={1}&zoom=18&addressdetails=1"
     	var url = api_call.format(latLong[0],latLong[1]);
-    	clickCount += 1;
+    	if (craftPath) {
+    		clickCount += 1;
+    	}
+    	if (clickCount == 2 && bol && craftPath){
+    		console.log(craftPath);
+    		document.getElementById('enter_edge').style.display = 'none';
+    		document.getElementById('rank_in').style.display = 'block';
+    		clickCount = 0;
+ 	    }
+	    else{
+	    	document.getElementById('rank_in').style.display = 'none';
+	    }
     	jQuery.getJSON(url).done([function(data){
     			var address = data["display_name"];
 					$.ajax({
@@ -74,24 +88,22 @@
 										'long': latLong[1],
 										'addr': address}
 							});
-					console.log(p)
+					// console.log(p)
     			popup
 			.setLatLng(e.latlng)
 			.setContent(address)
 			.openOn(map);
 
     			}]);
-    if (clickCount == 2 && bol){
-    	document.getElementById('rank_in').style.display = 'block';
-    	clickCount = 0;
-    }
-    else{
-    	document.getElementById('rank_in').style.display = 'none';
-    }
+    
     }
 	function showEdge1(){
-			console.log('YES');
-		  document.getElementById('enter_edge').style.display = 'block';
+		// console.log('YES');
+		if(!craftPath){
+			document.getElementById('enter_edge').style.display = 'block';
+			craftPath = true;
+			// console.log(craftPath);
+		}
 	}
 	// function showEdge2(p){
 	// 	// console.log(p);
