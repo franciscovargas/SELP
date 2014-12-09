@@ -38,15 +38,18 @@
 		color: #000;
 	}
 	</style>
+
 </head>
 <body>
-
+<script>
+var p = {{ path_bool| safe}}
+</script>
 
 <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-brand" href="#"><img src="{{url_for('static',filename='img/brand.png')}}" width="60"></a>
-          <a class="navbar-brand" href="#">M@pov</a>
+          <a class="navbar-brand" href="#">{{ path_bool}}</a>
         </div>
         <div>
           <ul class="nav navbar-nav">
@@ -60,9 +63,9 @@
         </div>
       <div class="nav navbar-right navbar-collapse collapse">
 				{% if not session.logged_in %}
-        	<a href="{{ url_for('login') }}" class="btn btn-primary navbar-btn">Craft Path</a>
+        	<a  href="{{ url_for('login') }}" class="btn btn-primary navbar-btn">Craft Path</a>
 				{% else %}
-					<a href="{{ url_for('path') }}" class="btn btn-primary navbar-btn">Craft Path</a>
+					<a class="btn btn-primary navbar-btn" onclick="showEdge1();" >Craft Path</a>
     	  {% endif %}
 	  </div>
       <form class="navbar-form navbar-left" role="search">
@@ -89,9 +92,11 @@
 											My Paths
 									</a>
 							</li>
-							{% if path %}
 							<li>
-									<form id="rank" style="color:#adadad;">
+									<p id='enter_edge' style="color:#adadad; display:none;">Please select an edge</br>
+							</li>
+							<li id ='rank_in' style="display:none;">
+									<form id="rank" style="color:#adadad;" >
 										    Please enter rank:
 										<input type="text" size=3 align="right" ></br>
 										    <p>The rank should be between 0-100</br>
@@ -101,7 +106,6 @@
 									</form>
 
 							</li>
-							{% endif %}
 					</ul>
 			</div>
 </div>
@@ -110,7 +114,7 @@
 <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
 
-	<div id='map'></div>
+	<div id='map' ></div>
 	<script src="{{url_for('static',filename='dist/js/mapcons.js')}}"></script>
 </body>
 </html>

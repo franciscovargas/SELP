@@ -9,6 +9,7 @@
 })
 		    .setView([ 55.944, -3.192], 15);
     var featureGroup = L.featureGroup().addTo(map);
+    var clickCount = 0;
 
 	var circle_options = {
       color: '#fff',      // Stroke color
@@ -53,25 +54,49 @@
     return formatted;
     };
 
+
     function getAddress(e){
+		// var bol =  {{ path_bool }} ;
+		// console.log(bol);
+		console.log(p);
+		var bol = $.parseJSON(p[0]);
+		console.log(bol);
     	var latLong = parseLatLong(e.latlng.toString()).split(",");
     	var api_call = "http://nominatim.openstreetmap.org/reverse?format=json&lat={0}&lon={1}&zoom=18&addressdetails=1"
     	var url = api_call.format(latLong[0],latLong[1]);
+    	clickCount += 1;
     	jQuery.getJSON(url).done([function(data){
     			var address = data["display_name"];
 					$.ajax({
 							type: 'POST',
-							url: '/path',
+							url: 'main',
 							data: {'lat' : latLong[0],
 										'long': latLong[1],
 										'addr': address}
 							});
+					console.log(p)
     			popup
 			.setLatLng(e.latlng)
 			.setContent(address)
 			.openOn(map);
 
     			}]);
+    if (clickCount == 2 && bol){
+    	document.getElementById('rank_in').style.display = 'block';
+    	clickCount = 0;
     }
+    else{
+    	document.getElementById('rank_in').style.display = 'none';
+    }
+    }
+	function showEdge1(){
+			console.log('YES');
+		  document.getElementById('enter_edge').style.display = 'block';
+	}
+	// function showEdge2(p){
+	// 	// console.log(p);
+	// 	 if (p[0]==="true"){
+	// 		document.getElementById('rank_in').style.display = 'block';}
+	// }
 
 	map.on('click', getAddress);

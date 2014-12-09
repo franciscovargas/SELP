@@ -8,6 +8,9 @@ from werkzeug.security import generate_password_hash, \
 from wtforms import Form, BooleanField, TextField, PasswordField, validators
 from flask.ext.wtf.html5 import EmailField
 from contextlib import closing
+from copy import copy
+from map_graph import stringify, string_to_graph
+from json import dumps
 
 # confifuration instructions
 DATABASE = 'app.db'
@@ -31,6 +34,7 @@ def ssl_required(fn):
     def decorated_view(*args, **kwargs):
         if current_app.config.get("SSL"):
             if request.is_secure:
+                print 1
                 return fn(*args, **kwargs)
             else:
                 return redirect(request.url.replace("http://", "https://"))
@@ -140,19 +144,32 @@ def login_required(method):
 
 
 class Main(views.MethodView):
-    def get(self):
-        return render_template('constrainedmap.html')
+    edges = []
+    path = []
+    path_bool = [False]
 
-
-class Path(views.MethodView):
     def get(self):
-        path = True
-        return render_template('constrainedmap.html', path=path)
+        self.path_bool[0] = True
+        return render_template('constrainedmap.html',
+                               path_bool=map(dumps, self.path_bool))
 
     def post(self):
-        req = request.form
-        print req
-        return redirect(url_for('path'))
+        req = copy(request.form)
+        self.edges += [copy((req['lat'], req['long']))]
+        print 'Added Edge %s, %s' % (req['lat'], req['long'])
+        print '# of nodes in edge %d' % len(self.edges)
+        if len(self.edges) == 2:
+            print self.edges
+            self.path_bool[0] = True
+            print self.path_bool
+            del self.edges[:]
+            print self.path_bool
+            return redirect(url_for('constrainedmap'))
+        else:
+            self.path_bool[0] = False
+            print len(self.edges)
+            print self.path_bool
+            return redirect(url_for('constrainedmap'))
 
 
 class LogOut(views.MethodView):
@@ -223,7 +240,7 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
-app.add_url_rule('/',
+app.add_url_rule('/main',
                  view_func=Main.as_view('constrainedmap'),
                  methods=["GET", "POST"])
 
@@ -237,11 +254,6 @@ app.add_url_rule('/logout',
 
 app.add_url_rule('/signup',
                  view_func=SignUp.as_view('signup'),
-                 methods=["GET", "POST"])
-
-
-app.add_url_rule('/path',
-                 view_func=Path.as_view('path'),
                  methods=["GET", "POST"])
 
 
