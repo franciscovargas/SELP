@@ -12,7 +12,7 @@ from contextlib import closing
 from copy import copy
 from map_graph import stringify, string_to_graph
 from json import dumps
-from math import cos , sin , acos, asin
+from math import cos , sin , acos, asin, pi
 
 
 # confifuration instructions
@@ -181,28 +181,30 @@ class Main(views.MethodView):
                                                               user_id))
             get_db().commit()
         elif 'walk' in req:
-            lat1 = float(req["lat1"])
-            lat2 = float(req["lat2"])
-            lon1 = float(req["long1"])
-            lon2 = float(req["long2"])
+            lat1 = float(req["lat1"])*pi/180.0
+            lat2 = float(req["lat2"])*pi/180.0
+            lon1 = float(req["long1"])*pi/180.0
+            lon2 = float(req["long2"])*pi/180.0
             get_db().create_function("cos", 1, cos)
             get_db().create_function("sin", 1, sin)
             get_db().create_function("acos", 1, acos)
             get_db().create_function("asin", 1, asin)
             cur = get_db().cursor()
-            print map_graph.QUERY1
-            cur.execute(map_graph.QUERY1, (lat1,
+            print map_graph.QUERY2 % (lat1,
+                                       lat1,
+                                       lon1,
+                                       lat2,
+                                       lat2,
+                                       lon2,
+                                       lat1,
+                                       lat1,
+                                       lon1,
+                                       lat2,
+                                       lat2,
+                                       lon2)
+            cur.execute(map_graph.QUERY3, (lat1,
                                            lat1,
-                                           lon1,
-                                           lat2,
-                                           lat2,
-                                           lon2,
-                                           lat1,
-                                           lat1,
-                                           lon1,
-                                           lat2,
-                                           lat2,
-                                           lon2))
+                                           lon1))
             print (lat1,lon1,lat2,lon2)
             print cur.fetchall()
 

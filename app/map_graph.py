@@ -23,6 +23,35 @@ QUERY1 = """SELECT edges.lat_start,
             LIMIT 6;
         """
 
+QUERY3 = """SELECT edges.lat_start,
+                   edges.long_start,
+                   edges.lat_end,
+                   edges.long_end
+            FROM edges
+            WHERE acos(sin(?) * sin(edges.lat_start*3.141592653589793
+/180.0)
+            + cos(?) * cos(edges.lat_start*3.141592653589793
+/180.0) * cos(edges.long_start*3.141592653589793
+/180.0 - (?))) * 6371 <= 1
+            ORDER BY edges.rank DESC
+            LIMIT 6;
+        """
+
+QUERY2 = """SELECT edges.lat_start,
+                   edges.long_start,
+                   edges.lat_end,
+                   edges.long_end
+            FROM edges
+            WHERE acos(sin(%f) * sin(edges.lat_start)
+            + cos(%f) * cos(edges.lat_start) * cos(edges.long_start - (%f))) * 6371 <= 1
+            AND acos(sin(%f) * sin(edges.lat_end)
+            + cos(%f) * cos(edges.lat_end) * cos(edges.long_end - (%f)))* 6371 < 
+            acos(sin(%f) * sin(%f)
+            + cos(%f) * cos(%f) * cos(%f - (%f)))* 6371
+            ORDER BY edges.rank DESC
+            LIMIT 6;
+        """
+
 
 def stringify(map_graph):
     """
