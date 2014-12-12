@@ -197,10 +197,10 @@ class Main(views.MethodView):
                                        lat2,
                                        lon2,
                                        lat1,
+                                       lat2,
                                        lat1,
+                                       lat2,
                                        lon1,
-                                       lat2,
-                                       lat2,
                                        lon2)
             cur.execute(map_graph.QUERY1, (lat1,
                                        lat1,
@@ -209,10 +209,10 @@ class Main(views.MethodView):
                                        lat2,
                                        lon2,
                                        lat1,
+                                       lat2,
                                        lat1,
+                                       lat2,
                                        lon1,
-                                       lat2,
-                                       lat2,
                                        lon2))
             print (lat1,lon1,lat2,lon2)
             print cur.fetchall()
