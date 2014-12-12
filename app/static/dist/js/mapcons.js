@@ -78,6 +78,8 @@
  	    }
 	    else{
 	    	document.getElementById('rank_in').style.display = 'none';
+	    	if(craftPath){
+	    	document.getElementById('enter_edge').style.display = 'block';}
 	    }
     	jQuery.getJSON(url).done([function(data){
     			var address = data["display_name"];
