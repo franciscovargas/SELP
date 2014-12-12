@@ -82,7 +82,7 @@
 	    	document.getElementById('rank_in').style.display = 'none';
 	    	if(craftPath){
 	    		document.getElementById('enter_edge').style.display = 'block';}
-	    		coords = []
+	    		coords = [];
 	   		}
     	jQuery.getJSON(url).done([function(data){
 			var address = data["display_name"];
@@ -122,18 +122,23 @@
 	// 		document.getElementById('rank_in').style.display = 'block';}
 	// }
 	function enterRankz(){
-		console.log("WHAT");
-		var edgeRank = parseInt(document.getElementById('the_rank').value);
-		enterRank = true;
-		console.log(edgeRank);
-		$.ajax({
-				type: 'POST',
-				url: 'main',
-				data: {'start' : coords[0],
-					   'end': coords[1],
-					   'rank': edgeRank}
-							});
-		console.log("WHAT");
-	}
+		if (craftPath){
+			console.log("WHAT");
+			var edgeRank = parseInt(document.getElementById('the_rank').value);
+			enterRank = true;
+			console.log(edgeRank);
+			$.ajax({
+					type: 'POST',
+					url: 'main',
+					data: {'start' : coords[0],
+						   'end': coords[1],
+						   'rank': edgeRank}
+								});
+			console.log("WHAT");
+		    }
+		    document.getElementById('rank_in').style.display = 'none';
+
+		    document.getElementById('enter_edge').style.display = 'block';
+		}
 
 	map.on('click', getAddress);

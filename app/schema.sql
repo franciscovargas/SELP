@@ -13,6 +13,7 @@ create table edges(
 	lat_end real not null,
 	long_start real not null,
 	long_end real not null,
+	rank integer not null,
 	user_id integer not null,
 	foreign key(user_id) references user(id)
 );

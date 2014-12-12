@@ -159,15 +159,26 @@ class Main(views.MethodView):
         req = copy(request.form)
         print 1111
         print req
-        # if len(self.edges) == 2:
-        #     print self.edges
-        #     print self.path_bool
-        #     del self.edges[:]
-        #     print self.path_bool
-        #     return redirect(url_for('constrainedmap'))
-        # else:
-        #     print len(self.edges)
-        #     print self.path_bool
+        user = dict(session)['username']
+        # print dict(user)
+        # print user['username']
+        print user
+        query = """SELECT user.id
+                   FROM user
+                   WHERE user.user = ?;
+                """
+        cur = get_db().cursor()
+        cur.execute(query, (user,))
+        user_id = cur.fetchall()[0][0]
+        cur.execute("""INSERT INTO edges(lat_start, lat_end, long_start, long_end, rank, user_id)
+                           VALUES (?, ?, ?,?, ?, ?);""", (float(req['start[lat]']),
+                                                          float(req['end[lat]']),
+                                                          float(req['start[long]']),
+                                                          float(req['end[long]']),
+                                                          int(req['rank']),
+                                                          user_id))
+        get_db().commit()
+
         return redirect(url_for('constrainedmap'))
 
 
