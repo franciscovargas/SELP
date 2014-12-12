@@ -21,7 +21,7 @@
       fillOpacity: 1    // Fill opacity
   };
 
-   //var circle_one = L.circle([ 55.944, -3.192], 20, circle_options).addTo(featureGroup);
+   // var circle_one = L.circle([ 55.944, -3.192], 20, circle_options).addTo(featureGroup);
     var drawControl = new L.Control.Draw({
     edit: {
       featureGroup: featureGroup
@@ -139,6 +139,11 @@
 		    document.getElementById('rank_in').style.display = 'none';
 
 		    document.getElementById('enter_edge').style.display = 'block';
+		    var points = [[parseFloat(coords[0]['lat']),parseFloat(coords[0]['long'])],
+		                 [parseFloat(coords[1]['lat']),parseFloat(coords[1]['long'])]];
+		    console.log(coords[0]['lat']);
+		    console.log(points[1]);
+		    var polyline = L.polyline(points, {color: 'green'}).addTo(map);
 		}
 
 	map.on('click', getAddress);
