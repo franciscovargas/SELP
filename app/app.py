@@ -11,6 +11,8 @@ from contextlib import closing
 from copy import copy
 from map_graph import stringify, string_to_graph
 from json import dumps
+from math import cos , sin , acos, asin
+
 
 # confifuration instructions
 DATABASE = 'app.db'
@@ -216,6 +218,10 @@ def connect_db():
 def init_db():
     with closing(connect_db()) as db:
         with app.open_resource('schema.sql', mode='r') as f:
+            db.create_function("cos", 1, cos)
+            db.create_function("sin", 1, sin)
+            db.create_function("acos", 1, acos)
+            db.create_function("asin", 1, asin)
             db.cursor().executescript(f.read())
             db.commit()
 
