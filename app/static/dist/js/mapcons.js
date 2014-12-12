@@ -79,8 +79,9 @@ function getAddress(e){
 		clickCount = 0;
 	    }
     else{
-    	document.getElementById('rank_in').style.display = 'none';
+    	
     	if(craftPath){
+    		document.getElementById('rank_in').style.display = 'none';
     		document.getElementById('enter_edge').style.display = 'block';}
     		coords = [];
    		}
