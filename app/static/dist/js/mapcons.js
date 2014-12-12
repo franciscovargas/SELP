@@ -10,8 +10,6 @@
     var featureGroup = L.featureGroup().addTo(map);
     var clickCount = 0;
     var craftPath = false;
-    var enterRank = false;
-    var rank = 0;
     var coords = [];
 
 
@@ -132,7 +130,8 @@
 				type: 'POST',
 				url: 'main',
 				data: {'start' : coords[0],
-					   'end': coords[1]}
+					   'end': coords[1],
+					   'rank': edgeRank}
 							});
 		console.log("WHAT");
 	}

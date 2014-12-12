@@ -157,7 +157,8 @@ class Main(views.MethodView):
 
     def post(self):
         req = copy(request.form)
-        print req['end[long]']
+        print 1111
+        print req
         # if len(self.edges) == 2:
         #     print self.edges
         #     print self.path_bool
