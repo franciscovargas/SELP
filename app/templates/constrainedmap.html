@@ -93,14 +93,14 @@ var p = {{ path_bool| safe}}
 									</a>
 							</li>
 							<li>
-									<p id='enter_edge' style="color:#adadad; display:none;">Please select an edge</br>
+									<p id="enter_edge" style="color:#adadad; display:none;">Please select an edge</br>
 							</li>
 							<li id ='rank_in' style="display:none;">
 									<form id="rank" style="color:#adadad;" >
 										    Please enter rank:
-										<input type="text" size=3 align="right" ></br>
+										<input id="the_rank" type="text" size=3 align="right" ></br>
 										    <p>The rank should be between 0-100</br>
-										<a href="{{ url_for('login') }}" class="btn btn-primary">submit edge</a>
+										<a  class="btn btn-primary" onclick="enterRankz()">submit edge</a>
 										<a href="{{ url_for('login') }}" class="btn btn-primary">submit path</a>
 										<p>Edge limit 1km</br>
 									</form>

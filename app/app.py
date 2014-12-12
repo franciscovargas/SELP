@@ -157,19 +157,17 @@ class Main(views.MethodView):
 
     def post(self):
         req = copy(request.form)
-        self.edges += [copy((req['lat'], req['long']))]
-        print 'Added Edge %s, %s' % (req['lat'], req['long'])
-        print '# of nodes in edge %d' % len(self.edges)
-        if len(self.edges) == 2:
-            print self.edges
-            print self.path_bool
-            del self.edges[:]
-            print self.path_bool
-            return redirect(url_for('constrainedmap'))
-        else:
-            print len(self.edges)
-            print self.path_bool
-            return redirect(url_for('constrainedmap'))
+        print req['end[long]']
+        # if len(self.edges) == 2:
+        #     print self.edges
+        #     print self.path_bool
+        #     del self.edges[:]
+        #     print self.path_bool
+        #     return redirect(url_for('constrainedmap'))
+        # else:
+        #     print len(self.edges)
+        #     print self.path_bool
+        return redirect(url_for('constrainedmap'))
 
 
 class LogOut(views.MethodView):

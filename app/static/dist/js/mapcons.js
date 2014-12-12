@@ -10,6 +10,10 @@
     var featureGroup = L.featureGroup().addTo(map);
     var clickCount = 0;
     var craftPath = false;
+    var enterRank = false;
+    var rank = 0;
+    var coords = [];
+
 
 	var circle_options = {
       color: '#fff',      // Stroke color
@@ -79,17 +83,24 @@
 	    else{
 	    	document.getElementById('rank_in').style.display = 'none';
 	    	if(craftPath){
-	    	document.getElementById('enter_edge').style.display = 'block';}
-	    }
+	    		document.getElementById('enter_edge').style.display = 'block';}
+	    		coords = []
+	   		}
     	jQuery.getJSON(url).done([function(data){
-    			var address = data["display_name"];
-					$.ajax({
-							type: 'POST',
-							url: 'main',
-							data: {'lat' : latLong[0],
+			var address = data["display_name"];
+			if (bol && craftPath){
+    			coords.push({'lat' : latLong[0],
 										'long': latLong[1],
-										'addr': address}
-							});
+										'addr': address});
+    		}
+			console.log(JSON.stringify(coords));
+			// $.ajax({
+			// 		type: 'POST',
+			// 		url: 'main',
+			// 		data: {'lat' : latLong[0],
+			// 					'long': latLong[1],
+			// 							'addr': address}
+			// 				});
 					// console.log(p)
     			popup
 			.setLatLng(e.latlng)
@@ -112,5 +123,18 @@
 	// 	 if (p[0]==="true"){
 	// 		document.getElementById('rank_in').style.display = 'block';}
 	// }
+	function enterRankz(){
+		console.log("WHAT");
+		var edgeRank = parseInt(document.getElementById('the_rank').value);
+		enterRank = true;
+		console.log(edgeRank);
+		$.ajax({
+				type: 'POST',
+				url: 'main',
+				data: {'start' : coords[0],
+					   'end': coords[1]}
+							});
+		console.log("WHAT");
+	}
 
 	map.on('click', getAddress);
