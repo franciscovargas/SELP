@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 #  (lat1, lat1, long1 ) provided from click in the interactive map
 #  or entered text (this is being debated)
 #  must provide  lat2, long 2 for the end point (lat2,lat2,lat2)
-#  for final distance (lat1, lat1, long1,lat2,lat2,lat2)
+#  for final distance (lat1, lat1, long1,lat2,lat2,lon)
 #  This is painful to understand based on knowledge from mathematics for 
 #  physics 2 must be tested rigourusly.
 QUERY1 = """SELECT edges.lat_start,

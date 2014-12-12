@@ -1,6 +1,7 @@
 # imports
 import functools
 import sqlite3
+import map_graph
 from flask import Flask, request, session, g, redirect, url_for, \
     abort, render_template, flash, views, current_app
 from werkzeug.security import generate_password_hash, \
@@ -157,27 +158,53 @@ class Main(views.MethodView):
 
     def post(self):
         req = copy(request.form)
-        print 1111
-        print req
+        # print 1111
+        # print req
         user = dict(session)['username']
         # print dict(user)
         # print user['username']
         print user
-        query = """SELECT user.id
-                   FROM user
-                   WHERE user.user = ?;
-                """
-        cur = get_db().cursor()
-        cur.execute(query, (user,))
-        user_id = cur.fetchall()[0][0]
-        cur.execute("""INSERT INTO edges(lat_start, lat_end, long_start, long_end, rank, user_id)
-                           VALUES (?, ?, ?,?, ?, ?);""", (float(req['start[lat]']),
-                                                          float(req['end[lat]']),
-                                                          float(req['start[long]']),
-                                                          float(req['end[long]']),
-                                                          int(req['rank']),
-                                                          user_id))
-        get_db().commit()
+        if 'craft' in req:
+            query = """SELECT user.id
+                       FROM user
+                       WHERE user.user = ?;
+                    """
+            cur = get_db().cursor()
+            cur.execute(query, (user,))
+            user_id = cur.fetchall()[0][0]
+            cur.execute("""INSERT INTO edges(lat_start, lat_end, long_start, long_end, rank, user_id)
+                               VALUES (?, ?, ?,?, ?, ?);""", (float(req['start[lat]']),
+                                                              float(req['end[lat]']),
+                                                              float(req['start[long]']),
+                                                              float(req['end[long]']),
+                                                              int(req['rank']),
+                                                              user_id))
+            get_db().commit()
+        elif 'walk' in req:
+            lat1 = float(req["lat1"])
+            lat2 = float(req["lat2"])
+            lon1 = float(req["long1"])
+            lon2 = float(req["long2"])
+            get_db().create_function("cos", 1, cos)
+            get_db().create_function("sin", 1, sin)
+            get_db().create_function("acos", 1, acos)
+            get_db().create_function("asin", 1, asin)
+            cur = get_db().cursor()
+            print map_graph.QUERY1
+            cur.execute(map_graph.QUERY1, (lat1,
+                                           lat1,
+                                           lon1,
+                                           lat2,
+                                           lat2,
+                                           lon2,
+                                           lat1,
+                                           lat1,
+                                           lon1,
+                                           lat2,
+                                           lat2,
+                                           lon2))
+            print (lat1,lon1,lat2,lon2)
+            print cur.fetchall()
 
         return redirect(url_for('constrainedmap'))
 

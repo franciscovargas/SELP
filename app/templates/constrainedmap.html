@@ -70,14 +70,14 @@ var p = {{ path_bool| safe}}
 	  </div>
       <form class="navbar-form navbar-left" role="search">
           <div class="form-group">
-              <input type="text" class="form-control" placeholder="Start point">
+              <input id="start_point" type="text" class="form-control" placeholder="Start point">
           </div>
       </form>
       <form class="navbar-form navbar-left" role="search">
           <div class="form-group">
-              <input type="text" class="form-control" placeholder="End point">
+              <input id="end_point" type="text" class="form-control" placeholder="End point">
           </div>
-          <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Random walk</button>
+          <a  onclick="randomWalk()" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Random walk</a>
       </form>
       </div>
     </nav>
