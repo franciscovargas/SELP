@@ -156,10 +156,12 @@ function randomWalk(){
 	var url2 = api_call1.format(end);
 	console.log(url1);
 	$.getJSON(url1).done([function(data){
+		console.log(data);
 		var lat1 = data[0]['lat'];
 		var lon1 = data[0]['lon'];
 		console.log(lat1);
 		$.getJSON(url2).done([function(data2){
+			console.log(data2);
 			var lat2 = data2[0]['lat'];
 			var lon2 = data2[0]['lon'];
 			$.ajax({

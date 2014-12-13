@@ -158,13 +158,8 @@ class Main(views.MethodView):
 
     def post(self):
         req = copy(request.form)
-        # print 1111
-        # print req
-        user = dict(session)['username']
-        # print dict(user)
-        # print user['username']
-        print user
         if 'craft' in req:
+            user = dict(session)['username']
             query = """SELECT user.id
                        FROM user
                        WHERE user.user = ?;
@@ -186,26 +181,12 @@ class Main(views.MethodView):
             lon1 = float(req["long1"])*pi/180.0
             lon2 = float(req["long2"])*pi/180.0
             random_walk = [[float(req["lat1"]),
-                            float(req["lat2"]),
-                            float(req["long1"]),
-                            float(req["long1"])]]
+                            float(req["long2"])]]
             get_db().create_function("cos", 1, cos)
             get_db().create_function("sin", 1, sin)
             get_db().create_function("acos", 1, acos)
             get_db().create_function("asin", 1, asin)
             cur = get_db().cursor()
-            # print map_graph.QUERY2 % (lat1,
-            #                            lat1,
-            #                            lon1,
-            #                            lat2,
-            #                            lat2,
-            #                            lon2,
-            #                            lat1,
-            #                            lat2,
-            #                            lat1,
-            #                            lat2,
-            #                            lon1,
-            #                            lon2)
             cur.execute(map_graph.QUERY1, (lat1,
                                            lat1,
                                            lon1,
@@ -223,8 +204,8 @@ class Main(views.MethodView):
             while len(results) > 0:
                 weights = [x[-1] for x in results]
                 index = decision_at_node_N(weights)
-                print index
-                random_walk += results[index]
+                random_walk += [[results[index][0],results[index][1]],
+                                [results[index][2],results[index][3]]]
                 lat1 = float(results[index][0])*pi/180.0
                 lat2 = float(results[index][1])*pi/180.0
                 lon1 = float(results[index][2])*pi/180.0
@@ -242,6 +223,8 @@ class Main(views.MethodView):
                                                lon1,
                                                lon2))
                 results = cur.fetchall()
+            random_walk += [[float(req["lat2"]),
+                             float(req["long2"])]]
             print random_walk
 
         return redirect(url_for('constrainedmap'))
