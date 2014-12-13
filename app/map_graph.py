@@ -1,7 +1,7 @@
 from json import dumps, loads
 from random import uniform
 import matplotlib.pyplot as plt
-from math import fsum
+from math import fsum, acos, asin, cos, sin
 
 #  (lat1, lat1, long1 ) provided from click in the interactive map
 #  or entered text (this is being debated)
@@ -85,6 +85,15 @@ QUERY2 = """SELECT edges.lat_start,
             LIMIT 6;
         """
 
+
+def distance(lat1,lon1,lat2,lon2):
+    """
+    This method computes a distance via the law of cosines
+    """
+    coord= map(lambda x:float(x)*pi.180.0,[lat1,lon1,lat2,lon2])
+    distance = acos(sin(coord[0]) * sin(coord[1]) + cos(coord[0]) * cos(coord[1]) * \
+        cos(coord[1] - (coord[0])))* 6371
+    return distance
 
 def stringify(map_graph):
     """

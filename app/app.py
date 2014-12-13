@@ -207,9 +207,10 @@ class Main(views.MethodView):
                 random_walk += [[results[index][0],results[index][1]],
                                 [results[index][2],results[index][3]]]
                 lat1 = float(results[index][0])*pi/180.0
-                lat2 = float(results[index][1])*pi/180.0
-                lon1 = float(results[index][2])*pi/180.0
+                lat2 = float(results[index][2])*pi/180.0
+                lon1 = float(results[index][1])*pi/180.0
                 lon2 = float(results[index][3])*pi/180.0
+                print (lat1*180/pi, lat2*180/pi, lon1*180/pi,lon2*180/pi)
                 cur.execute(map_graph.QUERY1, (lat1,
                                                lat1,
                                                lon1,
@@ -223,9 +224,11 @@ class Main(views.MethodView):
                                                lon1,
                                                lon2))
                 results = cur.fetchall()
+                print results
             random_walk += [[float(req["lat2"]),
                              float(req["long2"])]]
             print random_walk
+            print len(random_walk)
 
         return redirect(url_for('constrainedmap'))
 
@@ -320,5 +323,5 @@ app.add_url_rule('/signup',
 
 
 if __name__ == '__main__':
-    init_db()
+    # init_db()
     app.run()
