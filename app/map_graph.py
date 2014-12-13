@@ -1,7 +1,7 @@
 from json import dumps, loads
 from random import uniform
 import matplotlib.pyplot as plt
-from math import fsum, acos, asin, cos, sin
+from math import fsum, acos, asin, cos, sin, pi
 
 #  (lat1, lat1, long1 ) provided from click in the interactive map
 #  or entered text (this is being debated)
@@ -9,24 +9,19 @@ from math import fsum, acos, asin, cos, sin
 #  for final distance (lat1, lat1, long1,lat2,lat2,lon)
 #  This is painful to understand based on knowledge from mathematics for
 #  physics 2 must be tested rigourusly.
+
+
 QUERY1 = """SELECT edges.lat_start,
                    edges.long_start,
                    edges.lat_end,
                    edges.long_end,
                    edges.rank
             FROM edges
-            WHERE acos(sin(?) * sin(edges.lat_start*3.141592653589793
-/180.0)
-            + cos(?) * cos(edges.lat_start*3.141592653589793
-/180.0) * cos((edges.long_start*3.141592653589793
-/180.0 - (?)))) * 6371 <= 1
-            AND acos(sin(?) * sin(edges.lat_end*3.141592653589793
-/180.0)
-            + cos(?) * cos(edges.lat_end*3.141592653589793
-/180.0) * cos(edges.long_end*3.141592653589793
-/180.0 - (?)))* 6371 <
-            acos(sin(?) * sin(?)
-            + cos(?) * cos(?) * cos(? - (?)))* 6371
+            WHERE distance(?,?,edges.lat_start,edges.long_start)<= 1
+            AND  distance(?,?,edges.lat_end, edges.long_end)<
+            distance(?,?,?,?)
+            AND distance(?,?,edges.lat_start, edges.long_start)<
+            distance(?,?,?,?)
             ORDER BY edges.rank DESC
             LIMIT 6;
         """
@@ -90,9 +85,10 @@ def distance(lat1,lon1,lat2,lon2):
     """
     This method computes a distance via the law of cosines
     """
-    coord= map(lambda x:float(x)*pi.180.0,[lat1,lon1,lat2,lon2])
-    distance = acos(sin(coord[0]) * sin(coord[1]) + cos(coord[0]) * cos(coord[1]) * \
-        cos(coord[1] - (coord[0])))* 6371
+    print (lat1,lon1,lat2,lon2)
+    coord= map(lambda x:float(x)*pi/180.0,[lat1,lon1,lat2,lon2])
+    distance = acos(sin(coord[0]) * sin(coord[2]) + cos(coord[0]) * cos(coord[2]) *cos(coord[1] - (coord[3])))* 6371
+    print distance
     return distance
 
 def stringify(map_graph):

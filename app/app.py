@@ -10,7 +10,7 @@ from wtforms import Form, BooleanField, TextField, PasswordField, validators
 from flask.ext.wtf.html5 import EmailField
 from contextlib import closing
 from copy import copy
-from map_graph import stringify, string_to_graph, decision_at_node_N
+from map_graph import stringify, string_to_graph, decision_at_node_N, distance
 from json import dumps
 from math import cos , sin , acos, asin, pi
 
@@ -176,52 +176,58 @@ class Main(views.MethodView):
                                                               user_id))
             get_db().commit()
         elif 'walk' in req:
-            lat1 = float(req["lat1"])*pi/180.0
-            lat2 = float(req["lat2"])*pi/180.0
-            lon1 = float(req["long1"])*pi/180.0
-            lon2 = float(req["long2"])*pi/180.0
+            lat1 = float(req["lat1"])
+            lat2 = float(req["lat2"])
+            lon1 = float(req["long1"])
+            lon2 = float(req["long2"])
             random_walk = [[float(req["lat1"]),
                             float(req["long2"])]]
             get_db().create_function("cos", 1, cos)
             get_db().create_function("sin", 1, sin)
             get_db().create_function("acos", 1, acos)
             get_db().create_function("asin", 1, asin)
+            get_db().create_function("distance", 4, distance)
             cur = get_db().cursor()
-            cur.execute(map_graph.QUERY1, (lat1,
-                                           lat1,
-                                           lon1,
-                                           lat2,
+            print (lat1, lat2, lon1,lon2)
+
+            cur.execute(map_graph.QUERY1, (lat2,
+                                           lon2,
                                            lat2,
                                            lon2,
                                            lat1,
-                                           lat2,
-                                           lat1,
-                                           lat2,
                                            lon1,
+                                           lat2,
+                                           lon2,
+                                           lat2,
+                                           lon2,
+                                           lat1,
+                                           lon1,
+                                           lat2,
                                            lon2))
             results = cur.fetchall()
-            # print results
+            print results
+            # breakk
             while len(results) > 0:
                 weights = [x[-1] for x in results]
                 index = decision_at_node_N(weights)
                 random_walk += [[results[index][0],results[index][1]],
                                 [results[index][2],results[index][3]]]
-                lat1 = float(results[index][0])*pi/180.0
-                lat2 = float(results[index][2])*pi/180.0
-                lon1 = float(results[index][1])*pi/180.0
-                lon2 = float(results[index][3])*pi/180.0
-                print (lat1*180/pi, lat2*180/pi, lon1*180/pi,lon2*180/pi)
-                cur.execute(map_graph.QUERY1, (lat1,
-                                               lat1,
-                                               lon1,
-                                               lat2,
+                lat1 = float(results[index][0])
+                lon1 = float(results[index][1])
+                print "1uery params:",(lat1, lat2, lon1,lon2)
+                cur.execute(map_graph.QUERY1, (lat2,
+                                               lon2,
                                                lat2,
                                                lon2,
                                                lat1,
-                                               lat2,
-                                               lat1,
-                                               lat2,
                                                lon1,
+                                               lat2,
+                                               lon2,
+                                               lat2,
+                                               lon2,
+                                               lat1,
+                                               lon1,
+                                               lat2,
                                                lon2))
                 results = cur.fetchall()
                 print results
