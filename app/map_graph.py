@@ -18,67 +18,14 @@ QUERY1 = """SELECT edges.lat_start,
                    edges.rank
             FROM edges
             WHERE distance(?,?,edges.lat_start,edges.long_start)<= 1
-            AND  distance(?,?,edges.lat_end, edges.long_end)<
+            AND  distance(edges.lat_end, edges.long_end,?,?)<
             distance(?,?,?,?)
-            AND distance(?,?,edges.lat_start, edges.long_start)<
+            AND distance(edges.lat_start, edges.long_start,?,?)<
             distance(?,?,?,?)
             ORDER BY edges.rank DESC
             LIMIT 6;
         """
 
-QUERY3 = """SELECT edges.lat_start,
-                   edges.long_start,
-                   edges.lat_end,
-                   edges.long_end
-            FROM edges
-            WHERE acos(sin(?) * sin(edges.lat_start*3.141592653589793
-/180.0)
-            + cos(?) * cos(edges.lat_start*3.141592653589793
-/180.0) * cos(edges.long_start*3.141592653589793
-/180.0 - (?))) * 6371 <= 1
-            ORDER BY edges.rank DESC
-            LIMIT 6;
-        """
-
-QUERYD = """SELECT edges.lat_start,
-                   edges.long_start,
-                   edges.lat_end,
-                   edges.long_end,
-                   acos(sin(?) * sin(edges.lat_start*3.141592653589793
-/180.0)
-            + cos(?) * cos(edges.lat_start*3.141592653589793
-/180.0) * cos((edges.long_start*3.141592653589793
-/180.0 - (?)))) * 6371 , acos(sin(?) * sin(edges.lat_end*3.141592653589793
-/180.0)
-            + cos(?) * cos(edges.lat_end*3.141592653589793
-/180.0) * cos(edges.long_end*3.141592653589793
-/180.0 - (?)))* 6371 ,acos(sin(?) * sin(?)
-            + cos(?) * cos(?) * cos(? - (?)))* 6371
-            FROM edges
-            ORDER BY edges.rank DESC
-            LIMIT 6;
-        """
-
-QUERY2 = """SELECT edges.lat_start,
-                   edges.long_start,
-                   edges.lat_end,
-                   edges.long_end
-            FROM edges
-            WHERE acos(sin(%f) * sin(edges.lat_start*3.141592653589793
-/180.0)
-            + cos(%f) * cos(edges.lat_start*3.141592653589793
-/180.0) * cos(edges.long_start*3.141592653589793
-/180.0 - (%f))) * 6371 <= 1
-            AND acos(sin(%f) * sin(edges.lat_end*3.141592653589793
-/180.0)
-            + cos(%f) * cos(edges.lat_end*3.141592653589793
-/180.0) * cos(edges.long_end*3.141592653589793
-/180.0 - (%f)))* 6371 <
-            acos(sin(%f) * sin(%f)
-            + cos(%f) * cos(%f) * cos(%f - (%f)))* 6371
-            ORDER BY edges.rank DESC
-            LIMIT 6;
-        """
 
 
 def distance(lat1,lon1,lat2,lon2):
