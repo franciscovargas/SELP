@@ -154,7 +154,7 @@ class Main(views.MethodView):
 
     def get(self):
         self.path_bool[0] = True
-        if session['logged_in']:
+        if 'logged_in' in session and 'username' in session:
             user = dict(session)['username']
             query_rank = """SELECT user.path_count
                             FROM user
@@ -333,6 +333,9 @@ class SignUp(views.MethodView):
             return redirect(url_for('constrainedmap'))
 
 
+class About(views.MethodView):
+    def get(self):
+        return render_template('about.html')
 
 
 @app.route('/get_walk')
@@ -387,6 +390,10 @@ app.add_url_rule('/logout',
 
 app.add_url_rule('/signup',
                  view_func=SignUp.as_view('signup'),
+                 methods=["GET", "POST"])
+
+app.add_url_rule('/about',
+                 view_func=About.as_view('about'),
                  methods=["GET", "POST"])
 
 
