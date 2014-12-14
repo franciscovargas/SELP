@@ -11,7 +11,9 @@ var featureGroup = L.featureGroup().addTo(map);
 var clickCount = 0;
 var craftPath = false;
 var coords = [];
-
+var walk = [];
+var linePresance = 0;
+var polyline = 0;
 
 var circle_options = {
   color: '#fff',      // Stroke color
@@ -92,7 +94,7 @@ function getAddress(e){
 									'long': latLong[1],
 									'addr': address});
 		}
-		console.log(JSON.stringify(coords));
+		// console.log(JSON.stringify(coords));
 		// $.ajax({
 		// 		type: 'POST',
 		// 		url: 'main',
@@ -124,10 +126,10 @@ function showEdge1(){
 // }
 function enterRankz(){
 	if (craftPath){
-		console.log("WHAT");
+		// console.log("WHAT");
 		var edgeRank = parseInt(document.getElementById('the_rank').value);
 		enterRank = true;
-		console.log(edgeRank);
+		// console.log(edgeRank);
 		$.ajax({
 				type: 'POST',
 				url: 'main',
@@ -136,32 +138,33 @@ function enterRankz(){
 					   'rank': edgeRank,
 					   'craft': 1}
 							});
-		console.log("WHAT");
+		// console.log("WHAT");
 	    }
 	    document.getElementById('rank_in').style.display = 'none';
 
 	    document.getElementById('enter_edge').style.display = 'block';
 	    var points = [[parseFloat(coords[0]['lat']),parseFloat(coords[0]['long'])],
 	                  [parseFloat(coords[1]['lat']),parseFloat(coords[1]['long'])]];
-	    console.log(coords[0]['lat']);
-	    console.log(points[1]);
+	    // console.log(coords[0]['lat']);
+	    // console.log(points[1]);
 	    var polyline = L.polyline(points, {color: 'green'}).addTo(map);
 }
 
 function randomWalk(){
+	
 	var api_call1 = "http://nominatim.openstreetmap.org/search/{0},%20Edinburgh,%20Scotland,%20?format=json&addressdetails=1&limit=1&polygon_svg=1";
 	var start = document.getElementById('start_point').value;
 	var end = document.getElementById('end_point').value;
 	var url1 = api_call1.format(start);
 	var url2 = api_call1.format(end);
-	console.log(url1);
+	// console.log(url1);
 	$.getJSON(url1).done([function(data){
-		console.log(data);
+		// console.log(data);
 		var lat1 = data[0]['lat'];
 		var lon1 = data[0]['lon'];
-		console.log(lat1);
+		// console.log(lat1);
 		$.getJSON(url2).done([function(data2){
-			console.log(data2);
+			// console.log(data2);
 			var lat2 = data2[0]['lat'];
 			var lon2 = data2[0]['lon'];
 			$.ajax({
@@ -177,22 +180,28 @@ function randomWalk(){
 							});
 		}]);
 	}]);
-}
-
-(function worker() {
+	(function worker() {
   $.ajax({
   	dataType: "json",
     url: '/get_walk', 
     success: function(data) {
-      console.log(data);
-      var polyline = L.polyline(data['walk'], {color: 'green'}).addTo(map);
+      // console.log(data);
+      if (linePresance == 1) {
+		console.log("REMOVE");
+        map.removeLayer(polyline);
+      }
+      walk = data;
+      polyline = L.polyline(data['walk'], {color: 'red'}).addTo(map);
+      linePresance = 1;
     },
-    complete: function() {
-      // Schedule the next request when the current one's complete
-      setTimeout(worker, 5000);
-    }
+    // complete: function() {
+    //   // Schedule the next request when the current one's complete
+    //   setTimeout(worker, 5000);
+    // }
   });
 })();
+}
+
 
 
 
