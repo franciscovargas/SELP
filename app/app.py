@@ -10,7 +10,7 @@ from wtforms import Form, BooleanField, TextField, PasswordField, validators
 from flask.ext.wtf.html5 import EmailField
 from contextlib import closing
 from copy import copy
-from map_graph import stringify, string_to_graph, decision_at_node_N, distance
+from map_graph import  decision_at_node_N, distance
 from json import dumps
 from math import cos , sin , acos, asin, pi
 
