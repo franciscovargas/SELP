@@ -190,6 +190,19 @@ class Main(views.MethodView):
                                                               int(req['rank']),
                                                               user_id))
             get_db().commit()
+            query_rank = """SELECT user.path_count
+                            FROM user
+                            WHERE user.user = ?;
+                         """
+            cur = get_db().cursor()
+            cur.execute(query_rank, (user,))
+            self.user_rank = cur.fetchall()[0][0]
+            cur.execute(""" UPDATE  user
+                            SET path_count=?
+                            WHERE user=?;
+                        """,(self.user_rank + 1 , user))
+            get_db().commit()
+
         elif 'walk' in req:
             lat1 = float(req["lat1"])
             lat2 = float(req["lat2"])
