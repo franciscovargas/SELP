@@ -15,7 +15,8 @@ QUERY1 = """SELECT edges.lat_start,
                    edges.long_start,
                    edges.lat_end,
                    edges.long_end,
-                   edges.rank
+                   edges.rank,
+                   edges.id
             FROM edges
             WHERE distance(?,?,edges.lat_start,edges.long_start)<= 1
             AND  distance(edges.lat_end, edges.long_end,?,?)<
@@ -32,54 +33,11 @@ def distance(lat1,lon1,lat2,lon2):
     """
     This method computes a distance via the law of cosines
     """
-    print (lat1,lon1,lat2,lon2)
+    # print (lat1,lon1,lat2,lon2)
     coord= map(lambda x:float(x)*pi/180.0,[lat1,lon1,lat2,lon2])
     distance = acos(sin(coord[0]) * sin(coord[2]) + cos(coord[0]) * cos(coord[2]) *cos(coord[1] - (coord[3])))* 6371
-    print distance
+    # print distance
     return distance
-
-def stringify(map_graph):
-    """
-    A function used to convert a map graph data structure
-    in to a string
-    """
-    return dumps(map_graph)
-
-
-def string_to_graph(str):
-    """
-    A function used to convert a string back in to a map graph
-    data structure
-    """
-    return loads(str)
-
-
-def decision_at_node(end_point_edge_weights):
-    """
-    This function looks at the nodes that are can be reached
-    from your current state and roles a dice biased on the
-    edge ranks to determine which node to progress to.
-    """
-    p = end_point_edge_weights
-    cumulative_distribution = [p[0],
-                               p[0] + p[1],
-                               p[0] + p[1] + p[2],
-                               p[0] + p[1] + p[2] + p[3],
-                               p[0] + p[1] + p[2] + p[3] + p[4],
-                               p[0] + p[1] + p[2] + p[3] + p[4] + p[5]]
-    r = uniform(0, 1.0)  # generates a pseudo random rumber \in [0,1]
-    if r > cumulative_distribution[4]:
-        return 5
-    elif r > cumulative_distribution[3]:
-        return 4
-    elif r > cumulative_distribution[2]:
-        return 3
-    elif r > cumulative_distribution[1]:
-        return 2
-    elif r > cumulative_distribution[0]:
-        return 1
-    else:
-        return 0
 
 
 def decision_at_node_N(end_point_edge_weights):
@@ -98,15 +56,6 @@ def decision_at_node_N(end_point_edge_weights):
             index = i + 1
     return index
 
-
-def find_all_reachable_nodes(lat, long, connection):
-    """
-    This function finds all nodes which are in a radius of
-    1 km from the provided lat and long arguments
-    """
-    cur = connection.cursor()
-    cur.execute(QUERY1, (lat, lat, long))
-    return cur.fetchall()
 
 
 if __name__ == '__main__':
