@@ -21,8 +21,6 @@ DEBUG = True
 SECRET_KEY = 'development_key'
 USERNAME = 'admin'
 PASSWORD = 'default'
-# temporary test database
-users = {'test1@gmail.com': '1'}
 # application initiation
 app = Flask(__name__)
 app.config.from_object(__name__)
