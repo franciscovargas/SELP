@@ -3,7 +3,8 @@ create table user(
 	id integer primary key autoincrement,
 	user text not null,
 	password text not null,
-	postcode text not null
+	postcode text not null,
+	path_count integer default 0
 );
 
 drop table if exists edges;

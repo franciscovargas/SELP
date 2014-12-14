@@ -24,6 +24,7 @@ PASSWORD = 'default'
 # application initiation
 app = Flask(__name__)
 app.config.from_object(__name__)
+# global variable used to send path to front end
 walk = []
 
 def ssl_required(fn):
@@ -149,9 +150,23 @@ class Main(views.MethodView):
     path = []
     path_bool = [False, False]
     ranks_and_keys= []
+    user_rank = 0
 
     def get(self):
         self.path_bool[0] = True
+        if session['logged_in']:
+            user = dict(session)['username']
+            query_rank = """SELECT user.path_count
+                            FROM user
+                            WHERE user.user = ?;
+                         """
+            cur = get_db().cursor()
+            cur.execute(query_rank, (user,))
+            self.user_rank = cur.fetchall()[0][0]
+            session['rank'] = self.user_rank
+            print '##########'
+            print self.user_rank
+            print '########'
         return render_template('constrainedmap.html',
                                path_bool=map(dumps, self.path_bool))
 
@@ -237,7 +252,7 @@ class Main(views.MethodView):
                              float(req["long2"])]]
             # print random_walk
             # print len(random_walk)
-            print self.ranks_and_keys
+            # print self.ranks_and_keys
             global walk
             walk = copy(random_walk)
             rank_path_bool = True
@@ -253,7 +268,7 @@ class Main(views.MethodView):
                                """
                 cur = get_db().cursor()
                 for edge in new_rank:
-                    print (edge[0], edge[1])
+                    # print (edge[0], edge[1])
                     cur.execute(update_query,(edge[0], edge[1]))
                 get_db().commit()
                 print "FOOOOOOOOOOOOO"
@@ -363,5 +378,5 @@ app.add_url_rule('/signup',
 
 
 if __name__ == '__main__':
-    # init_db()
+    #init_db()
     app.run()
