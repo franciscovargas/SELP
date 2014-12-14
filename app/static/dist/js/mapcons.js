@@ -67,6 +67,7 @@ function getAddress(e){
     else{
     	
     	if(craftPath){
+    		document.getElementById('rank_in').style.display = 'none';
     		document.getElementById('rank_path').style.display = 'none';
     		document.getElementById('enter_edge').style.display = 'block';}
     		coords = [];
