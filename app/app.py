@@ -3,7 +3,7 @@ import functools
 import sqlite3
 import map_graph
 from flask import Flask, request, session, g, redirect, url_for, \
-    abort, render_template, flash, views, current_app
+    abort, render_template, flash, views, current_app, jsonify
 from werkzeug.security import generate_password_hash, \
     check_password_hash
 from wtforms import Form, BooleanField, TextField, PasswordField, validators
@@ -26,7 +26,7 @@ users = {'test1@gmail.com': '1'}
 # application initiation
 app = Flask(__name__)
 app.config.from_object(__name__)
-
+walk = []
 
 def ssl_required(fn):
     """
@@ -235,8 +235,11 @@ class Main(views.MethodView):
                              float(req["long2"])]]
             print random_walk
             print len(random_walk)
-
+            global walk
+            walk = copy(random_walk)
+        
         return redirect(url_for('constrainedmap'))
+
 
 
 class LogOut(views.MethodView):
@@ -276,6 +279,13 @@ class SignUp(views.MethodView):
                                                   user.addr))
             get_db().commit()
             return redirect(url_for('constrainedmap'))
+
+
+
+
+@app.route('/get_walk')
+def get_walk():
+    return jsonify(walk=walk, test='test')
 
 
 def connect_db():

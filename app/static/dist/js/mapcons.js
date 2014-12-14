@@ -179,4 +179,21 @@ function randomWalk(){
 	}]);
 }
 
+(function worker() {
+  $.ajax({
+  	dataType: "json",
+    url: '/get_walk', 
+    success: function(data) {
+      console.log(data);
+      var polyline = L.polyline(data['walk'], {color: 'green'}).addTo(map);
+    },
+    complete: function() {
+      // Schedule the next request when the current one's complete
+      setTimeout(worker, 5000);
+    }
+  });
+})();
+
+
+
 map.on('click', getAddress);
