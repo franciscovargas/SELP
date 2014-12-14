@@ -42,9 +42,10 @@ def distance(lat1,lon1,lat2,lon2):
     2.http://www.movable-type.co.uk/scripts/latlong.html
     """
     coord= map(lambda x:float(x)*pi/180.0,[lat1,lon1,lat2,lon2])
-    distance = acos(sin(coord[0]) * sin(coord[2]) + \
-        cos(coord[0]) * cos(coord[2]) *cos(coord[1] - (coord[3])))* 6371
-    return distance
+    inverse_arc = sin(coord[0]) * sin(coord[2]) + \
+        cos(coord[0]) * cos(coord[2]) *cos(coord[1] - (coord[3]))
+    arc_dist = acos(min(1,max(inverse_arc,-1)))*6371
+    return arc_dist
 
 
 def decision_at_node_N(end_point_edge_weights):
