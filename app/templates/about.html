@@ -1,0 +1,45 @@
+<html>
+<head>
+    <meta content="utf-8" http-equiv="encoding">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <title>Login</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href="{{url_for('static',filename='dist/css/bootstrap.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='dist/css/login.css')}}" rel="stylesheet">
+    <script src="{{url_for('static',filename='jquery-1.11.1.min.js')}}"></script>
+    <script src="{{url_for('static',filename='dist/js/login.js')}}"></script>
+</head>
+{% block body %}
+<section id="login">
+    <div class="container">
+    	<div class="row">
+    	    <div class="col-xs-12">
+        	    <div class="form-wrap">
+                <h2>About</h2>
+
+                            <div class="form-group">
+                              <label for="email" class="sr-only">About</label>
+                              <p> This app is designed to implement a random walk
+                              biased on user rankings
+                            </div>
+        	    </div>
+    		</div>
+    	</div>
+    </div>
+</section>
+
+
+<footer id="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                {% with messages = get_flashed_messages() %}
+                    {% for message in messages %}
+                        {{message}}
+                    {% endfor %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}
