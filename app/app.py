@@ -256,6 +256,11 @@ class Main(views.MethodView):
                 random_walk += [[results[index][0],results[index][1]],
                                 [results[index][2],results[index][3]]]
                 self.ranks_and_keys += [[results[index][4],results[index][5]]]
+                # Stepping to new edge (reducing distance)
+                # Now the query ensures that only results 
+                # whose distance is smaller than that of the 
+                # new starting point to the end point
+                # pass the final two clauses in QUERY1
                 lat1 = float(results[index][0])
                 lon1 = float(results[index][1])
                 # Distance query execution
