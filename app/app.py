@@ -15,7 +15,7 @@ from json import dumps
 from math import cos , sin , acos, asin, pi
 
 
-# confifuration instructions
+# configuration instructions
 DATABASE = 'app.db'
 DEBUG = True
 SECRET_KEY = 'development_key'
@@ -36,7 +36,6 @@ def ssl_required(fn):
     def decorated_view(*args, **kwargs):
         if current_app.config.get("SSL"):
             if request.is_secure:
-                print 1
                 return fn(*args, **kwargs)
             else:
                 return redirect(request.url.replace("http://", "https://"))
@@ -87,19 +86,19 @@ class User(object):
 
 
 ###############################################################################
-#                        END                                                  #
+#                                END                                          #
 ###############################################################################
-
-
+                              ###########                                     
+                              ###########
+                              ###########                                     
+###############################################################################
+#                        VIEW METHOD CLASSES                                  #
+###############################################################################
 class Login(views.MethodView):
     @ssl_required
     def get(self):
         # small db check
-        print "####################"
         cur = get_db().cursor()
-        cur.execute(" SELECT * FROM user;")
-        print cur.fetchall()
-        print "####################"
         redirect(request.url.replace("http://", "https://"))
         return render_template('login.html')
 
@@ -116,10 +115,8 @@ class Login(views.MethodView):
                    WHERE user.user = ?;
                 """
         cur = get_db().cursor()
-        print user.username
         cur.execute(query, (user.username,))
         result = cur.fetchall()
-        print len(result) > 0
         if len(result) > 0:
             user.pw_hash = result[0][0]
             if user.check_password(passwd):
@@ -146,6 +143,10 @@ def login_required(method):
 
 
 class Main(views.MethodView):
+    # The following view attributes provide communication
+    # Messages between the client javascrpt mapcon.js and
+    # The back end in this  view in order to yield the 
+    # dynamic properties held in the view.
     edges = []
     path = []
     path_bool = [False, False]
@@ -164,15 +165,15 @@ class Main(views.MethodView):
             cur.execute(query_rank, (user,))
             self.user_rank = cur.fetchall()[0][0]
             session['rank'] = self.user_rank
-            print '##########'
-            print self.user_rank
-            print '########'
         return render_template('constrainedmap.html',
                                path_bool=map(dumps, self.path_bool))
 
     def post(self):
         req = copy(request.form)
         rank_path_bool = False
+
+        #Checking for the correct post request
+        #To the craft and commit path
         if 'craft' in req:
             user = dict(session)['username']
             query = """SELECT user.id
@@ -203,6 +204,9 @@ class Main(views.MethodView):
                         """,(self.user_rank + 1 , user))
             get_db().commit()
 
+
+        # Checking for the correct post request
+        # To compute random biased walk
         elif 'walk' in req:
             lat1 = float(req["lat1"])
             lat2 = float(req["lat2"])
@@ -211,14 +215,17 @@ class Main(views.MethodView):
             random_walk = [[float(req["lat1"]),
                             float(req["long2"])]]
             ranks_and_keys  = []
+            # Passing methods from python to sql
             get_db().create_function("cos", 1, cos)
             get_db().create_function("sin", 1, sin)
             get_db().create_function("acos", 1, acos)
             get_db().create_function("asin", 1, asin)
             get_db().create_function("distance", 4, distance)
             cur = get_db().cursor()
-            # print (lat1, lat2, lon1,lon2)
-
+            # fetches the
+            # The following query queries for
+            # top 6 paths which take you a step closer to the destination
+            # and are within 1Km rangeto the current node you are at
             cur.execute(map_graph.QUERY1, (lat2,
                                            lon2,
                                            lat2,
@@ -234,17 +241,24 @@ class Main(views.MethodView):
                                            lat2,
                                            lon2))
             results = cur.fetchall()
-            # print results
-            # breakk
+            # The following loop carries out the query which fetches the
+            # top 6 paths which take you a step closer to the destination
+            # and are within 1Km rangeto the current node you are at
+            # The contraints on the query gaurantee this loop to converge
+            # At each iteration it it gets closest to the end point
+            # till there are no more points in the database which are closer
+            # to the end point. Databases are finite is a key fact here.
             while len(results) > 0:
                 weights = [x[-1] for x in results]
+                # Dice throwing algorithm to pick on to which node/edge
+                # edge to move on to
                 index = decision_at_node_N(weights)
                 random_walk += [[results[index][0],results[index][1]],
                                 [results[index][2],results[index][3]]]
                 self.ranks_and_keys += [[results[index][4],results[index][5]]]
                 lat1 = float(results[index][0])
                 lon1 = float(results[index][1])
-                # print "1uery params:",(lat1, lat2, lon1,lon2)
+                # Distance query execution
                 cur.execute(map_graph.QUERY1, (lat2,
                                                lon2,
                                                lat2,
@@ -260,16 +274,22 @@ class Main(views.MethodView):
                                                lat2,
                                                lon2))
                 results = cur.fetchall()
-                # print results
             random_walk += [[float(req["lat2"]),
                              float(req["long2"])]]
-            # print random_walk
-            # print len(random_walk)
-            # print self.ranks_and_keys
+            # Global walk variable utilized to pass json to route in
+            # order to draw path in the front end
+            # whilist this is not good practice or pythonic at all
+            # Dealing with theese frameworks is a whole new thing
+            # and it was the only way I could figure this out with
+            # the given time constraints
             global walk
             walk = copy(random_walk)
             rank_path_bool = True
 
+        # Checking for the correct post
+        # Following condition ranks the random path excuted by the client
+        # updating all edges contained in that path by
+        # averaging the new path with the old one
         elif 'rank_p' in req and len(self.ranks_and_keys) > 0:
             try:
                 edge_rank = float(req['rank_p'])
@@ -281,12 +301,11 @@ class Main(views.MethodView):
                                """
                 cur = get_db().cursor()
                 for edge in new_rank:
-                    # print (edge[0], edge[1])
                     cur.execute(update_query,(edge[0], edge[1]))
                 get_db().commit()
-                print "FOOOOOOOOOOOOO"
                 self.ranks_and_keys = []
             except:
+                # flash a inccorrect input message
                 pass
                 
      
@@ -295,6 +314,9 @@ class Main(views.MethodView):
 
 
 class LogOut(views.MethodView):
+    """
+    Simple logging out view method
+    """
 
     def get(self):
         session.pop('username', None)
@@ -303,6 +325,9 @@ class LogOut(views.MethodView):
 
 
 class SignUp(views.MethodView):
+    """
+    Simple signup view method
+    """
     @ssl_required
     def get(self):
         return render_template('signup.html')
@@ -323,8 +348,6 @@ class SignUp(views.MethodView):
         else:
             user = User(username, passwd, address)
             cur = get_db().cursor()
-            print passwd
-            print user.pw_hash
             cur.execute("""INSERT INTO user(user, password, postcode)
                            VALUES (?, ?, ?);""", (user.username,
                                                   user.pw_hash,
@@ -334,14 +357,38 @@ class SignUp(views.MethodView):
 
 
 class About(views.MethodView):
+    """
+    About view
+    """
     def get(self):
         return render_template('about.html')
-
+###############################################################################
+#                                END                                          #
+###############################################################################
+                              ###########                                     
+                              ###########
+                              ###########                                     
+###############################################################################
+#                              ROUTES                                         #
+###############################################################################
 
 @app.route('/get_walk')
 def get_walk():
+    """
+    This routes utilizes the local variable walk
+    in order to host a json which holds the drawing
+    coordinates for the computed random walk in the main
+    """
     return jsonify(walk=walk, test='test')
-
+###############################################################################
+#                                END                                          #
+###############################################################################
+                              ###########                                     
+                              ###########
+                              ###########                                     
+###############################################################################
+#                           DATABASE FUNTIONS                                 #
+###############################################################################
 
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
@@ -376,6 +423,18 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
+
+###############################################################################
+#                                END                                          #
+###############################################################################
+                              ###########                                     
+                              ###########
+                              ###########                                     
+###############################################################################
+#                              URL RULES                                      #
+###############################################################################
+
+
 app.add_url_rule('/main',
                  view_func=Main.as_view('constrainedmap'),
                  methods=["GET", "POST"])
@@ -398,5 +457,4 @@ app.add_url_rule('/about',
 
 
 if __name__ == '__main__':
-    #init_db()
     app.run()
