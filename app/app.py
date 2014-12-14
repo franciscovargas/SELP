@@ -226,8 +226,8 @@ class Main(views.MethodView):
             # The following query queries for
             # top 6 paths which take you a step closer to the destination
             # and are within 1Km rangeto the current node you are at
-            cur.execute(map_graph.QUERY1, (lat2,
-                                           lon2,
+            cur.execute(map_graph.QUERY1, (lat1,
+                                           lon1,
                                            lat2,
                                            lon2,
                                            lat1,
@@ -259,8 +259,8 @@ class Main(views.MethodView):
                 lat1 = float(results[index][0])
                 lon1 = float(results[index][1])
                 # Distance query execution
-                cur.execute(map_graph.QUERY1, (lat2,
-                                               lon2,
+                cur.execute(map_graph.QUERY1, (lat1,
+                                               lon1,
                                                lat2,
                                                lon2,
                                                lat1,
