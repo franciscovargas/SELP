@@ -18,11 +18,3 @@ create table edges(
 	user_id integer not null,
 	foreign key(user_id) references user(id)
 );
-
-drop table if exists paths;
-create table paths(
-	id integer primary key autoincrement,
-	path text not null,
-	user_id integer not null,
-	foreign key(user_id) references user(id)
-);
