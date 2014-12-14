@@ -67,7 +67,7 @@ function getAddress(e){
     else{
     	
     	if(craftPath){
-    		document.getElementById('rank_in').style.display = 'none';
+    		document.getElementById('rank_path').style.display = 'none';
     		document.getElementById('enter_edge').style.display = 'block';}
     		coords = [];
    		}
@@ -88,6 +88,7 @@ function getAddress(e){
 }
 function showEdge1(){
 	if(!craftPath){
+		document.getElementById('rank_path').style.display = 'none';
 		document.getElementById('enter_edge').style.display = 'block';
 		craftPath = true;
 	}
@@ -114,7 +115,7 @@ function enterRankz(){
 }
 
 function randomWalk(){
-	
+	document.getElementById('rank_path').style.display = 'block';
 	var api_call1 = "http://nominatim.openstreetmap.org/search/{0},%20Edinburgh,%20Scotland,%20?format=json&addressdetails=1&limit=1&polygon_svg=1";
 	var start = document.getElementById('start_point').value;
 	var end = document.getElementById('end_point').value;
@@ -155,7 +156,15 @@ function randomWalk(){
 })();
 }
 
+function submitRank(){
+	var rank_p = document.getElementById('rank_p_e').value;
+	$.ajax({
+					type: 'POST',
+					url: 'main',
+					data: {'rank_p' : rank_p,}
+							});
 
+}
 
 
 map.on('click', getAddress);

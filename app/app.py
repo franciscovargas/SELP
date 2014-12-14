@@ -150,6 +150,7 @@ class Main(views.MethodView):
     edges = []
     path = []
     path_bool = [False, False]
+    ranks_and_keys= []
 
     def get(self):
         self.path_bool[0] = True
@@ -158,6 +159,7 @@ class Main(views.MethodView):
 
     def post(self):
         req = copy(request.form)
+        rank_path_bool = False
         if 'craft' in req:
             user = dict(session)['username']
             query = """SELECT user.id
@@ -182,13 +184,14 @@ class Main(views.MethodView):
             lon2 = float(req["long2"])
             random_walk = [[float(req["lat1"]),
                             float(req["long2"])]]
+            ranks_and_keys  = []
             get_db().create_function("cos", 1, cos)
             get_db().create_function("sin", 1, sin)
             get_db().create_function("acos", 1, acos)
             get_db().create_function("asin", 1, asin)
             get_db().create_function("distance", 4, distance)
             cur = get_db().cursor()
-            print (lat1, lat2, lon1,lon2)
+            # print (lat1, lat2, lon1,lon2)
 
             cur.execute(map_graph.QUERY1, (lat2,
                                            lon2,
@@ -205,16 +208,17 @@ class Main(views.MethodView):
                                            lat2,
                                            lon2))
             results = cur.fetchall()
-            print results
+            # print results
             # breakk
             while len(results) > 0:
                 weights = [x[-1] for x in results]
                 index = decision_at_node_N(weights)
                 random_walk += [[results[index][0],results[index][1]],
                                 [results[index][2],results[index][3]]]
+                self.ranks_and_keys += [[results[index][4],results[index][5]]]
                 lat1 = float(results[index][0])
                 lon1 = float(results[index][1])
-                print "1uery params:",(lat1, lat2, lon1,lon2)
+                # print "1uery params:",(lat1, lat2, lon1,lon2)
                 cur.execute(map_graph.QUERY1, (lat2,
                                                lon2,
                                                lat2,
@@ -230,14 +234,36 @@ class Main(views.MethodView):
                                                lat2,
                                                lon2))
                 results = cur.fetchall()
-                print results
+                # print results
             random_walk += [[float(req["lat2"]),
                              float(req["long2"])]]
-            print random_walk
-            print len(random_walk)
+            # print random_walk
+            # print len(random_walk)
+            print self.ranks_and_keys
             global walk
             walk = copy(random_walk)
-        
+            rank_path_bool = True
+
+        elif 'rank_p' in req and len(self.ranks_and_keys) > 0:
+            try:
+                edge_rank = float(req['rank_p'])
+                new_rank = [((float(x[0]) + edge_rank) / 2.0, int(x[1]))
+                               for x in self.ranks_and_keys]
+                update_query = """ UPDATE  edges
+                                   SET rank=?
+                                   WHERE id=?;
+                               """
+                cur = get_db().cursor()
+                for edge in new_rank:
+                    print (edge[0], edge[1])
+                    cur.execute(update_query,(edge[0], edge[1]))
+                get_db().commit()
+                print "FOOOOOOOOOOOOO"
+                self.ranks_and_keys = []
+            except:
+                pass
+                
+     
         return redirect(url_for('constrainedmap'))
 
 

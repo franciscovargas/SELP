@@ -110,6 +110,25 @@ var p = {{ path_bool| safe}}
 			</div>
 </div>
 {% endif %}
+<div id="wrapper">
+			<div id="sidebar-wrapper">
+					<ul class="sidebar-nav">
+							<li>
+									<p id="enter_edge" style="color:#adadad; display:none;">Please rank path</br>
+							</li>
+							<li id ='rank_path' style="display:none;">
+									<form id="rank" style="color:#adadad;" >
+										    Please enter rank:
+										<input id="rank_p_e" type="text" size=3 align="right" ></br>
+										    <p>The rank should be between 0-100</br>
+										<a  class="btn btn-primary" onclick="submitRank()">submit rank</a>
+									</form>
+
+							</li>
+					</ul>
+			</div>
+</div>
+
 
 <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' rel='stylesheet' />
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
