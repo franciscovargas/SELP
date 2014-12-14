@@ -1,8 +1,0 @@
-app/__init__.py
-app/app.py
-app/map_graph.py
-mapov.egg-info/PKG-INFO
-mapov.egg-info/SOURCES.txt
-mapov.egg-info/dependency_links.txt
-mapov.egg-info/requires.txt
-mapov.egg-info/top_level.txt

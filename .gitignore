@@ -4,3 +4,5 @@
 *.pyc
 *.swp
 *.out
+mapov.egg-info/
+mapov
