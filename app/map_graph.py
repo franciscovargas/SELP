@@ -1,15 +1,18 @@
-from json import dumps, loads
 from random import uniform
 import matplotlib.pyplot as plt
 from math import fsum, acos, asin, cos, sin, pi
 
-#  (lat1, lat1, long1 ) provided from click in the interactive map
-#  or entered text (this is being debated)
-#  must provide  lat2, long 2 for the end point (lat2,lat2,lat2)
-#  for final distance (lat1, lat1, long1,lat2,lat2,lon)
-#  This is painful to understand based on knowledge from mathematics for
-#  physics 2 must be tested rigourusly.
 
+"""
+QUERY1 DISECTION:
+- The first clause ensures that the start of the edges
+    are within 1KM range of the starting point.
+- The second clause aims to gaurantee that the end of 
+    the nodes queried is closer to the end point
+- The third caluse checks that the start of the edges
+    queried are closer to the end point than the current
+    edge
+"""
 
 QUERY1 = """SELECT edges.lat_start,
                    edges.long_start,
@@ -32,11 +35,15 @@ QUERY1 = """SELECT edges.lat_start,
 def distance(lat1,lon1,lat2,lon2):
     """
     This method computes a distance via the law of cosines
+    derivation may be found here (Calculation of Distance on 
+    the Earth using Latitude and Longitude):
+    1 . http://www.math.unl.edu/~shartke2/teaching/2011m896/SphericalLawOfCosines.pdf
+    addapted to 2. using the fact that sin(pi - x) = cos(x) and cos(pi -x) = sin(x)
+    2.http://www.movable-type.co.uk/scripts/latlong.html
     """
-    # print (lat1,lon1,lat2,lon2)
     coord= map(lambda x:float(x)*pi/180.0,[lat1,lon1,lat2,lon2])
-    distance = acos(sin(coord[0]) * sin(coord[2]) + cos(coord[0]) * cos(coord[2]) *cos(coord[1] - (coord[3])))* 6371
-    # print distance
+    distance = acos(sin(coord[0]) * sin(coord[2]) + \
+        cos(coord[0]) * cos(coord[2]) *cos(coord[1] - (coord[3])))* 6371
     return distance
 
 
@@ -45,6 +52,10 @@ def decision_at_node_N(end_point_edge_weights):
     This function looks at the nodes that are can be reached
     from your current state and roles a dice biased on the
     edge ranks to determine which node to progress to.
+    The underlying mathematicsis quite simple and the dice can 
+    have the sides of the input. Computes a cumulative_distribution
+    and checks for a random number lying within ranges of the 
+    distribution
     """
     norm = sum(end_point_edge_weights)
     p = [float(x)/float(norm) for x in end_point_edge_weights]
@@ -59,6 +70,9 @@ def decision_at_node_N(end_point_edge_weights):
 
 
 if __name__ == '__main__':
+    """
+    Structure for visual tests to be done for the dice.
+    """
     r = uniform(0, 1.0)
     probabilities = (20, 30)
     test = []
