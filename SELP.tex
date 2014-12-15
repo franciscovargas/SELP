@@ -1,0 +1,54 @@
+\documentclass[11pt]{article}
+\renewcommand{\baselinestretch}{1.05}
+\usepackage{amsmath,amsthm,verbatim,amssymb,amsfonts,amscd, graphicx}
+\usepackage{graphics}
+\topmargin0.0cm
+\headheight0.0cm
+\headsep0.0cm
+\oddsidemargin0.0cm
+\textheight23.0cm
+\textwidth16.5cm
+\footskip1.0cm
+
+ \begin{document}
+ 
+
+
+\title{Software Engineering Large Practical}
+\author{s1235260 Francisco Vargas}
+\maketitle
+
+\section{Development Process}
+\subsection{Original Specification}
+The Original Specification comprised of a web app in which users could rank paths. Paths being streets edges walks accross parks etc. Besides the orginal path ranking non users/users should be able to obtain a random walk biased on the ranking of previous users. The idea behind this is to through a dice which is bias on users weightings at each decision step. A decision step in this sense is simply moving from one edge to another aiming to reach a final destination. So input a start point input an end point and you have a random path which probably may 
+by plesant. This specification was met fully.
+\subsection{Challenges and Solutions} 
+the biggest challenge was working with spherical polar coordinates (The earth can be approximated
+to a sphere) and ensuring the path stayed sort of on track. The movements here are probabilistic (pseudo random) and hence constraining 
+such movements becomes very difficult. Understanding the cosine law for spherical polars and implementing it to give constraints on the queries was a major challenge in this project.
+\newline
+\newline
+Another significant challenge was finding a dynamic map. This took about 2 weeks of research before the start of the project. Used Mapbox and not leaflet like I originally propposed nonethless both their API's are connected. In terms of the data which provides addresses (geocoding and reverse geocoding) I used openstreetmaps originally started using google maps yet encountered loads of traffic problems.
+\newline
+\newline
+Working in the web development framework was remarkably challenging since it is something I am new to. Due to this lack of experience I made several design and choice errors which I will expand on laters chapters of this report.
+\subsection{Source Control (git)}
+ As required git was used for source control. More specifically I used I private repository in github since I enjoy the graphs they provide. I find visual aid useful when dealing with branches.
+ \newline
+ The general approach was to add elements with their relevant commits as time progressed commits became shorter and less clauses where used within them. When confronting a majoy bug fix I would branc away from master and merge after the bug had been solvented.
+
+\subsection{Unit Testing}
+I carried out unit tests formally towards the end of the project to verify if the custom mathematical functions I used worked as expected. Something important to note is that I should have carried out unit tests earlier on in the develoment process and along with branchess and bugfixes, I did not manage to do so since I am new to this development process and workframe which let me to struggle in managing everything perfectly.
+\newline
+ I would like to point that I made an attempt in replacing view tests by clicking on buttons and querying the database using sqlite3.
+\newline
+There is an interesting test inside the unit test folder which I think is worth mentioning. The test $visual\_dice\_test.py$ computes histograms
+of two different weight distributions. One distributed in a symmetric normal (but discrete) like manner and the other uniformly distributed.
+The dice is roled from 100 to 9000 times and its histograms at different number of roles are computed and ploted as png files. By inspecting this images one can confirm that the biased dice does indeed work. A formal unit test may not be relevant here since its probabilistic behaviour does not give us information that can be asserted.  
+
+\subsection{Documentation and Comements}
+During the development process small informative comments and debug logs where made. Towards the end more formal and dense documentation was delivered.
+
+\section{App Disection}
+
+\end{document}

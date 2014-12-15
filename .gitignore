@@ -4,5 +4,6 @@
 *.pyc
 *.swp
 *.out
+/test/*.png
 mapov.egg-info/
 mapov

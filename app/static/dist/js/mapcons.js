@@ -97,6 +97,15 @@ function showEdge1(){
 function enterRankz(){
 	if (craftPath){
 		var edgeRank = parseInt(document.getElementById('the_rank').value);
+		if(edgeRank > 100){
+			alert("rank is above 100!")
+		}
+		if(edgeRank < 0){
+			alert("rank is negative!")
+		}
+		if(isNaN(edgeRank)){
+			alert("rank is not a number")
+		}
 		enterRank = true;
 		$.ajax({
 				type: 'POST',
@@ -117,28 +126,38 @@ function enterRankz(){
 
 function randomWalk(){
 	document.getElementById('rank_path').style.display = 'block';
-	var api_call1 = "http://nominatim.openstreetmap.org/search/{0},%20Edinburgh,%20Scotland,%20?format=json&addressdetails=1&limit=1&polygon_svg=1";
+	var api_call1 = "http://nominatim.openstreetmap.org/search/{0},%20City of Edinburgh,%20Scotland,%20?format=json&addressdetails=1&limit=1&polygon_svg=1";
 	var start = document.getElementById('start_point').value;
 	var end = document.getElementById('end_point').value;
 	var url1 = api_call1.format(start);
 	var url2 = api_call1.format(end);
 	$.getJSON(url1).done([function(data){
-		var lat1 = data[0]['lat'];
-		var lon1 = data[0]['lon'];
+		if (data[0] !== undefined){
+			var lat1 = data[0]['lat'];
+			var lon1 = data[0]['lon'];}
+		else{
+			alert('starting point not found');
+		}
 		$.getJSON(url2).done([function(data2){
-			var lat2 = data2[0]['lat'];
-			var lon2 = data2[0]['lon'];
-			$.ajax({
-					type: 'POST',
-					url: 'main',
-					data: {'lat1' : lat1,
-						   'long1': lon1,
-						   'addr1': start,
-						   'lat2' : lat2,
-						   'long2': lon2,
-						   'addr2': end,
-						   'walk' : 1}
-							});
+			if (data2[0] !== undefined){
+				var lat2 = data2[0]['lat'];
+				var lon2 = data2[0]['lon'];
+			
+				console.log('PASS');
+				$.ajax({
+						type: 'POST',
+						url: 'main',
+						data: {'lat1' : lat1,
+							   'long1': lon1,
+							   'addr1': start,
+							   'lat2' : lat2,
+							   'long2': lon2,
+							   'addr2': end,
+							   'walk' : 1}
+								});}
+			else{
+				alert('end point not found');
+			}
 		}]);
 	}]);
 	(function worker() {
@@ -150,15 +169,30 @@ function randomWalk(){
         map.removeLayer(polyline);
       }
       walk = data;
+      console.log(data);
       polyline = L.polyline(data['walk'], {color: 'red'}).addTo(map);
       linePresance = 1;
     },
+    complete: function() {
+
+ // Schedule the next request when the current one's complete
+	// setTimeout(worker, 5000);
+       }
   });
 })();
 }
 
 function submitRank(){
 	var rank_p = document.getElementById('rank_p_e').value;
+	if(rank_p > 100){
+			alert("rank is above 100!")
+		}
+	if(rank_p < 0){
+		alert("rank is negative!")
+	}
+	if(isNaN(rank_p)){
+		alert("rank is not a number")
+	}
 	$.ajax({
 					type: 'POST',
 					url: 'main',
