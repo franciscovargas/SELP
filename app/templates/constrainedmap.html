@@ -8,7 +8,7 @@
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 	<link rel="shortcut icon" href="/favicon.ico">
 	<link href="{{url_for('static',filename='dist/css/bootstrap.css')}}" rel="stylesheet">
-	<link href="{{url_for('static',filename='dist/css//simple-sidebar.css')}}" rel="stylesheet">
+	<link href="{{url_for('static',filename='dist/css/custom-mapov.css')}}" rel="stylesheet">
 	<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
 	<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
 	<script src="{{url_for('static',filename='jquery-1.11.1.min.js')}}"></script>
@@ -67,10 +67,10 @@ var p = {{ path_bool| safe}}
 									</a>
 							</li>
 							<li>
-									<p id="enter_edge" style="color:#adadad; display:none;">Please select an edge</br>
+									<p id="enter_edge">Please select an edge</br>
 							</li>
-							<li id ='rank_in' style="display:none;">
-									<form id="rank" style="color:#adadad;" >
+							<li id ='rank_in' >
+									<form id="rank">
 										    Please enter rank:
 										<input id="the_rank" type="text" size=3 align="right" ></br>
 										    <p>The rank should be between 0-100</br>
@@ -87,8 +87,8 @@ var p = {{ path_bool| safe}}
 <div id="wrapper">
 			<div id="sidebar-wrapper">
 					<ul class="sidebar-nav">
-							<li id ='rank_path' style="display:none;">
-									<form id="rank" style="color:#adadad;" >
+							<li id ='rank_path'>
+									<form id="rank" >
 										    Please enter rank:
 										<input id="rank_p_e" type="text" size=3 align="right" ></br>
 										    <p>The rank should be between 0-100</br>

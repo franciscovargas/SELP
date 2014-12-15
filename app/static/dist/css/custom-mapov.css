@@ -4,30 +4,49 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
-/* Toggle Styles */
-  html,  .container-fluid, .content, .content > * {
-    height: 100% !important;}
-        body { margin:0; padding:0;}
-      #map {
-        z-index: 0 ;
-        position: absolute;
+
+html,  .container-fluid, .content, .content > * {
+    height: 100% !important;
+}
+body {
+    margin:0;
+    padding:0;}
+#map {
+    z-index: 0 ;
+    position: absolute;
     height: 100% ;top:70px; bottom:0; width:100%;}
-    .leaflet-top{
-        top: 2000px;
+.leaflet-top{
+    top: 2000px;
     }
-    #text{
-        background-color: #353535;
-        border-color: #353535;
-    }
-    .details
-    {
-            height: 4px;
-            text-align: left;
-    }
-    input{
-        height: 20px;
-        color: #000;
-    }
+#text{
+    background-color: #353535;
+    border-color: #353535;
+}
+.details
+{
+        height: 4px;
+        text-align: left;
+}
+input{
+    height: 20px;
+    color: #000;
+}
+#enter_edge{
+    color:#adadad; 
+    display:none;
+}
+#rank_in{
+    display:none;
+}
+#rank{
+    color:#adadad;
+}
+#rank_path{
+    display:none;
+}
+
+
+
 #wrapper {
     padding-right: 0;
     -webkit-transition: all 0.5s ease;
@@ -35,7 +54,7 @@
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
 }
-
+/* Toggle Styles */
 #wrapper.toggled {
     padding-right: 250px;
 }
