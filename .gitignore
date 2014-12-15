@@ -4,6 +4,10 @@
 *.pyc
 *.swp
 *.out
+*.synctex.gz
+*.fdb_latexmk
+SELP.log 
+*.aux
 /test/*.png
 mapov.egg-info/
 mapov
