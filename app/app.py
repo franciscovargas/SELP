@@ -175,35 +175,42 @@ class Main(views.MethodView):
         #Checking for the correct post request
         #To the craft and commit path
         if 'craft' in req:
-            user = dict(session)['username']
-            query = """SELECT user.id
-                       FROM user
-                       WHERE user.user = ?;
-                    """
-            cur = get_db().cursor()
-            cur.execute(query, (user,))
-            user_id = cur.fetchall()[0][0]
-            cur.execute("""INSERT INTO edges(lat_start, lat_end, long_start, long_end, rank, user_id)
-                               VALUES (?, ?, ?,?, ?, ?);""", (float(req['start[lat]']),
-                                                              float(req['end[lat]']),
-                                                              float(req['start[long]']),
-                                                              float(req['end[long]']),
-                                                              int(req['rank']),
-                                                              user_id))
-            get_db().commit()
-            query_rank = """SELECT user.path_count
-                            FROM user
-                            WHERE user.user = ?;
-                         """
-            cur = get_db().cursor()
-            cur.execute(query_rank, (user,))
-            self.user_rank = cur.fetchall()[0][0]
-            cur.execute(""" UPDATE  user
-                            SET path_count=?
-                            WHERE user=?;
-                        """,(self.user_rank + 1 , user))
-            get_db().commit()
-
+            try:
+                # Ensure no ranks greater than 100 
+                # enter the database
+                if req['rank'] <= 100:
+                    user = dict(session)['username']
+                    query = """SELECT user.id
+                               FROM user
+                               WHERE user.user = ?;
+                            """
+                    cur = get_db().cursor()
+                    cur.execute(query, (user,))
+                    user_id = cur.fetchall()[0][0]
+                    cur.execute("""INSERT INTO edges(lat_start, lat_end, long_start, long_end, rank, user_id)
+                                       VALUES (?, ?, ?,?, ?, ?);""", (float(req['start[lat]']),
+                                                                      float(req['end[lat]']),
+                                                                      float(req['start[long]']),
+                                                                      float(req['end[long]']),
+                                                                      int(req['rank']),
+                                                                      user_id))
+                    get_db().commit()
+                    query_rank = """SELECT user.path_count
+                                    FROM user
+                                    WHERE user.user = ?;
+                                 """
+                    cur = get_db().cursor()
+                    cur.execute(query_rank, (user,))
+                    self.user_rank = cur.fetchall()[0][0]
+                    cur.execute(""" UPDATE  user
+                                    SET path_count=?
+                                    WHERE user=?;
+                                """,(self.user_rank + 1 , user))
+                    get_db().commit()
+            except ValueError:
+                # for user inputing nothing and submitting
+                print 'Submitted null rank'
+                pass
 
         # Checking for the correct post request
         # To compute random biased walk
@@ -297,20 +304,25 @@ class Main(views.MethodView):
         # averaging the new path with the old one
         elif 'rank_p' in req and len(self.ranks_and_keys) > 0:
             try:
-                edge_rank = float(req['rank_p'])
-                new_rank = [((float(x[0]) + edge_rank) / 2.0, int(x[1]))
-                               for x in self.ranks_and_keys]
-                update_query = """ UPDATE  edges
-                                   SET rank=?
-                                   WHERE id=?;
-                               """
-                cur = get_db().cursor()
-                for edge in new_rank:
-                    cur.execute(update_query,(edge[0], edge[1]))
-                get_db().commit()
-                self.ranks_and_keys = []
+                # ensures only ranks less than or equal to 100
+                # get through to the database
+                if float(req['rank_p']) <= 100:
+                    edge_rank = float(req['rank_p'])
+                    # Old rank is averaged with new rank and
+                    # updated
+                    new_rank = [((float(x[0]) + edge_rank) / 2.0, int(x[1]))
+                                   for x in self.ranks_and_keys]
+                    update_query = """ UPDATE  edges
+                                       SET rank=?
+                                       WHERE id=?;
+                                   """
+                    cur = get_db().cursor()
+                    for edge in new_rank:
+                        cur.execute(update_query,(edge[0], edge[1]))
+                    get_db().commit()
+                    self.ranks_and_keys = []
             except:
-                # flash a inccorrect input message
+                # If user enters blank rank
                 pass
                 
      
