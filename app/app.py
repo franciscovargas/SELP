@@ -24,8 +24,7 @@ PASSWORD = 'default'
 # application initiation
 app = Flask(__name__)
 app.config.from_object(__name__)
-# global variable used to send path to front end
-walk = []
+
 
 def ssl_required(fn):
     """
@@ -108,7 +107,7 @@ class Login(views.MethodView):
             session.pop('username', None)
             return redirect(url_for('login'))
         username = request.form['email']
-        passwd = request.form['key']
+        passwd = request.form['passwd']
         user = User(username, passwd)
         query = """SELECT user.password
                    FROM user
@@ -154,6 +153,8 @@ class Main(views.MethodView):
     user_rank = 0
 
     def get(self):
+        if 'walk' not in session:
+            session['walk'] = []
         self.path_bool[0] = True
         if 'logged_in' in session and 'username' in session:
             user = dict(session)['username']
@@ -294,8 +295,7 @@ class Main(views.MethodView):
             # Dealing with theese frameworks is a whole new thing
             # and it was the only way I could figure this out with
             # the given time constraints
-            global walk
-            walk = copy(random_walk)
+            session['walk'] = copy(random_walk)
             rank_path_bool = True
 
         # Checking for the correct post
@@ -396,7 +396,9 @@ def get_walk():
     in order to host a json which holds the drawing
     coordinates for the computed random walk in the main
     """
-    return jsonify(walk=walk, test='test')
+    if 'walk' not in session:
+        session['walk'] = []
+    return jsonify(walk=session['walk'], test='test')
 ###############################################################################
 #                                END                                          #
 ###############################################################################
