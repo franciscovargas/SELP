@@ -106,22 +106,28 @@ function enterRankz(){
 		if(isNaN(edgeRank)){
 			alert("rank is not a number")
 		}
-		enterRank = true;
-		$.ajax({
-				type: 'POST',
-				url: 'main',
-				data: {'start' : coords[0],
-					   'end': coords[1],
-					   'rank': edgeRank,
-					   'craft': 1}
-							});
-	    }
+		if(!(isNaN(edgeRank) || edgeRank < 0 || edgeRank > 100)){
+			console.log("WHY");
+			alert("Rank entered")
+		    enterRank = true;
+			$.ajax({
+					type: 'POST',
+					url: 'main',
+					data: {'start' : coords[0],
+						   'end': coords[1],
+						   'rank': edgeRank,
+						   'craft': 1}
+								});
+			var points = [[parseFloat(coords[0]['lat']),parseFloat(coords[0]['long'])],
+		                  [parseFloat(coords[1]['lat']),parseFloat(coords[1]['long'])]];
+		    var polyline = L.polyline(points, {color: 'green'}).addTo(map);
+
+		    }
 	    document.getElementById('rank_in').style.display = 'none';
 
 	    document.getElementById('enter_edge').style.display = 'block';
-	    var points = [[parseFloat(coords[0]['lat']),parseFloat(coords[0]['long'])],
-	                  [parseFloat(coords[1]['lat']),parseFloat(coords[1]['long'])]];
-	    var polyline = L.polyline(points, {color: 'green'}).addTo(map);
+	    
+		}
 }
 
 function randomWalk(){
@@ -193,12 +199,17 @@ function submitRank(){
 	if(isNaN(rank_p)){
 		alert("rank is not a number")
 	}
-	$.ajax({
-					type: 'POST',
-					url: 'main',
-					data: {'rank_p' : rank_p,}
-							});
-
+	if(rank_p == ""){
+		alert("enter a number please")
+	}
+	if(!(isNaN(rank_p) || rank_p < 0 || rank_p > 100 || rank_p == "")){
+		alert("Rank submitted")
+		$.ajax({
+						type: 'POST',
+						url: 'main',
+						data: {'rank_p' : rank_p,}
+								});
+	}
 }
 
 
