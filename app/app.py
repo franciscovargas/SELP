@@ -10,9 +10,9 @@ from wtforms import Form, BooleanField, TextField, PasswordField, validators
 from flask.ext.wtf.html5 import EmailField
 from contextlib import closing
 from copy import copy
-from map_graph import  decision_at_node_N, distance
+from map_graph import decision_at_node_N, distance
 from json import dumps
-from math import cos , sin , acos, asin, pi
+from math import cos, sin, acos, asin, pi
 
 
 # configuration instructions
@@ -49,25 +49,27 @@ def ssl_required(fn):
 
 
 class RegistrationForm(Form):
+
     """
     Registration form validation class
     """
     email = EmailField('email', [
         validators.Length(min=1, max=35),
         validators.Required()
-        ])
+    ])
     addr = TextField('addr', [
         validators.Length(min=1, max=35),
         validators.Required()
-        ])
+    ])
     key = TextField('key', [
         validators.Required(),
         validators.EqualTo('key2', message='Passwords must match')
-        ])
+    ])
     key2 = TextField('key2')
 
 
 class User(object):
+
     """
     Password salting class
     """
@@ -87,13 +89,14 @@ class User(object):
 ###############################################################################
 #                                END                                          #
 ###############################################################################
-                              ###########                                     
-                              ###########
-                              ###########                                     
+        ###########
+        ###########
+        ###########
 ###############################################################################
 #                        VIEW METHOD CLASSES                                  #
 ###############################################################################
 class Login(views.MethodView):
+
     @ssl_required
     def get(self):
         # small db check
@@ -144,12 +147,12 @@ def login_required(method):
 class Main(views.MethodView):
     # The following view attributes provide communication
     # Messages between the client javascrpt mapcon.js and
-    # The back end in this  view in order to yield the 
+    # The back end in this  view in order to yield the
     # dynamic properties held in the view.
     edges = []
     path = []
     path_bool = [False, False]
-    ranks_and_keys= []
+    ranks_and_keys = []
     user_rank = 0
 
     def get(self):
@@ -173,13 +176,13 @@ class Main(views.MethodView):
         req = copy(request.form)
         rank_path_bool = False
 
-        #Checking for the correct post request
-        #To the craft and commit path
+        # Checking for the correct post request
+        # To the craft and commit path
         if 'craft' in req:
             try:
-                # Ensure no ranks greater than 100 
+                # Ensure no ranks greater than 100
                 # enter the database
-                if req['rank'] <= 100:
+                if float(req['rank']) <= 100:
                     user = dict(session)['username']
                     query = """SELECT user.id
                                FROM user
@@ -189,12 +192,16 @@ class Main(views.MethodView):
                     cur.execute(query, (user,))
                     user_id = cur.fetchall()[0][0]
                     cur.execute("""INSERT INTO edges(lat_start, lat_end, long_start, long_end, rank, user_id)
-                                       VALUES (?, ?, ?,?, ?, ?);""", (float(req['start[lat]']),
-                                                                      float(req['end[lat]']),
-                                                                      float(req['start[long]']),
-                                                                      float(req['end[long]']),
-                                                                      int(req['rank']),
-                                                                      user_id))
+                                   VALUES (?, ?, ?,?, ?, ?);""", (float(req['start[lat]']),
+                                                                  float(
+                                                                      req['end[lat]']),
+                                                                  float(
+                                                                      req['start[long]']),
+                                                                  float(
+                                                                      req['end[long]']),
+                                                                  int(req[
+                                                                      'rank']),
+                                                                  user_id))
                     get_db().commit()
                     query_rank = """SELECT user.path_count
                                     FROM user
@@ -206,7 +213,7 @@ class Main(views.MethodView):
                     cur.execute(""" UPDATE  user
                                     SET path_count=?
                                     WHERE user=?;
-                                """,(self.user_rank + 1 , user))
+                                """, (self.user_rank + 1, user))
                     get_db().commit()
             except ValueError:
                 # for user inputing nothing and submitting
@@ -222,7 +229,7 @@ class Main(views.MethodView):
             lon2 = float(req["long2"])
             random_walk = [[float(req["lat1"]),
                             float(req["long2"])]]
-            ranks_and_keys  = []
+            ranks_and_keys = []
             # Passing methods from python to sql
             get_db().create_function("cos", 1, cos)
             get_db().create_function("sin", 1, sin)
@@ -261,12 +268,12 @@ class Main(views.MethodView):
                 # Dice throwing algorithm to pick on to which node/edge
                 # edge to move on to
                 index = decision_at_node_N(weights)
-                random_walk += [[results[index][0],results[index][1]],
-                                [results[index][2],results[index][3]]]
-                self.ranks_and_keys += [[results[index][4],results[index][5]]]
+                random_walk += [[results[index][0], results[index][1]],
+                                [results[index][2], results[index][3]]]
+                self.ranks_and_keys += [[results[index][4], results[index][5]]]
                 # Stepping to new edge (reducing distance)
-                # Now the query ensures that only results 
-                # whose distance is smaller than that of the 
+                # Now the query ensures that only results
+                # whose distance is smaller than that of the
                 # new starting point to the end point
                 # pass the final two clauses in QUERY1
                 lat1 = float(results[index][0])
@@ -311,26 +318,25 @@ class Main(views.MethodView):
                     # Old rank is averaged with new rank and
                     # updated
                     new_rank = [((float(x[0]) + edge_rank) / 2.0, int(x[1]))
-                                   for x in self.ranks_and_keys]
+                                for x in self.ranks_and_keys]
                     update_query = """ UPDATE  edges
                                        SET rank=?
                                        WHERE id=?;
                                    """
                     cur = get_db().cursor()
                     for edge in new_rank:
-                        cur.execute(update_query,(edge[0], edge[1]))
+                        cur.execute(update_query, (edge[0], edge[1]))
                     get_db().commit()
                     self.ranks_and_keys = []
             except:
                 # If user enters blank rank
                 pass
-                
-     
+
         return redirect(url_for('constrainedmap'))
 
 
-
 class LogOut(views.MethodView):
+
     """
     Simple logging out view method
     """
@@ -342,6 +348,7 @@ class LogOut(views.MethodView):
 
 
 class SignUp(views.MethodView):
+
     """
     Simple signup view method
     """
@@ -374,20 +381,23 @@ class SignUp(views.MethodView):
 
 
 class About(views.MethodView):
+
     """
     About view
     """
+
     def get(self):
         return render_template('about.html')
 ###############################################################################
 #                                END                                          #
 ###############################################################################
-                              ###########                                     
-                              ###########
-                              ###########                                     
+        ###########
+        ###########
+        ###########
 ###############################################################################
 #                              ROUTES                                         #
 ###############################################################################
+
 
 @app.route('/get_walk')
 def get_walk():
@@ -402,12 +412,13 @@ def get_walk():
 ###############################################################################
 #                                END                                          #
 ###############################################################################
-                              ###########                                     
-                              ###########
-                              ###########                                     
+    ###########
+    ###########
+    ###########
 ###############################################################################
 #                           DATABASE FUNTIONS                                 #
 ###############################################################################
+
 
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
@@ -446,9 +457,9 @@ def teardown_request(exception):
 ###############################################################################
 #                                END                                          #
 ###############################################################################
-                              ###########                                     
-                              ###########
-                              ###########                                     
+        ###########
+        ###########
+        ###########
 ###############################################################################
 #                              URL RULES                                      #
 ###############################################################################

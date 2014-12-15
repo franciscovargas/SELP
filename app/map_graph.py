@@ -31,8 +31,7 @@ QUERY1 = """SELECT edges.lat_start,
         """
 
 
-
-def distance(lat1,lon1,lat2,lon2):
+def distance(lat1, lon1, lat2, lon2):
     """
     This method computes a distance via the law of cosines
     derivation may be found here (Calculation of Distance on 
@@ -41,10 +40,10 @@ def distance(lat1,lon1,lat2,lon2):
     addapted to 2. using the fact that sin(pi - x) = cos(x) and cos(pi -x) = sin(x)
     2.http://www.movable-type.co.uk/scripts/latlong.html
     """
-    coord= map(lambda x:float(x)*pi/180.0,[lat1,lon1,lat2,lon2])
+    coord = map(lambda x: float(x) * pi / 180.0, [lat1, lon1, lat2, lon2])
     inverse_arc = sin(coord[0]) * sin(coord[2]) + \
-        cos(coord[0]) * cos(coord[2]) *cos(coord[1] - (coord[3]))
-    arc_dist = acos(min(1,max(inverse_arc,-1)))*6371
+        cos(coord[0]) * cos(coord[2]) * cos(coord[1] - (coord[3]))
+    arc_dist = acos(min(1, max(inverse_arc, -1))) * 6371
     return arc_dist
 
 
@@ -59,7 +58,7 @@ def decision_at_node_N(end_point_edge_weights):
     distribution
     """
     norm = sum(end_point_edge_weights)
-    p = [float(x)/float(norm) for x in end_point_edge_weights]
+    p = [float(x) / float(norm) for x in end_point_edge_weights]
     cumulative_distribution = [fsum(p[:i + 1]) for i, x in enumerate(p)]
     r = uniform(0, 1.0)  # generates a pseudo random rumber \in [0,1]
     index = 0
@@ -67,7 +66,6 @@ def decision_at_node_N(end_point_edge_weights):
         if r > cu:
             index = i + 1
     return index
-
 
 
 if __name__ == '__main__':
