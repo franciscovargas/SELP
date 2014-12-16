@@ -59,7 +59,6 @@ function getAddress(e){
 		clickCount += 1;
 	}
 	if (clickCount == 2 && bol && craftPath){
-		console.log(craftPath);
 		document.getElementById('enter_edge').style.display = 'none';
 		document.getElementById('rank_in').style.display = 'block';
 		clickCount = 0;
@@ -107,7 +106,7 @@ function enterRankz(){
 			alert("rank is not a number")
 		}
 		if(!(isNaN(edgeRank) || edgeRank < 0 || edgeRank > 100)){
-			console.log("WHY");
+
 			alert("Rank entered")
 		    enterRank = true;
 			$.ajax({
@@ -149,7 +148,6 @@ function randomWalk(){
 				var lat2 = data2[0]['lat'];
 				var lon2 = data2[0]['lon'];
 			
-				console.log('PASS');
 				$.ajax({
 						type: 'POST',
 						url: 'main',
@@ -166,26 +164,28 @@ function randomWalk(){
 			}
 		}]);
 	}]);
-	(function worker() {
+	function worker() {
   $.ajax({
   	dataType: "json",
     url: '/get_walk', 
     success: function(data) {
+      console.log(data);
       if (linePresance == 1) {
         map.removeLayer(polyline);
       }
       walk = data;
-      console.log(data);
       polyline = L.polyline(data['walk'], {color: 'red'}).addTo(map);
       linePresance = 1;
+
     },
     complete: function() {
 
  // Schedule the next request when the current one's complete
-	// setTimeout(worker, 5000);
+      // setTimeout(worker, 100);
        }
   });
-})();
+};
+setTimeout(worker,1000);
 }
 
 function submitRank(){

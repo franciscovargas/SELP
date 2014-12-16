@@ -15,8 +15,8 @@ body {
     z-index: 0 ;
     position: absolute;
     height: 100% ;top:70px; bottom:0; width:100%;}
-.leaflet-top{
-    top: 2000px;
+.leaflet-top.leaflet-left{
+    top: 100px !important;
     }
 #text{
     background-color: #353535;
