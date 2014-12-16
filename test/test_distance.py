@@ -14,6 +14,10 @@ class TestSequenceFunctions(unittest.TestCase):
         self.con = sqlite3.connect("app.db")
 
     def test_distance_does_not_raise_on_valid_input(self):
+        """
+        The following test inspects that the distance function
+        does not break on valid inputs i.e. all possible angles
+        """
         raised = False
         try:
             [distance(lat1, long1, lat2, long2)
@@ -26,6 +30,14 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertFalse(raised, 'Exception raised')
 
     def test_distance_value(self):
+        """
+        The following test checks that all paths within
+        an artificially created database (created by myself)
+        have length less than 1km. I created such database
+        using the path and only clickin and storing edges
+        within the university campus area and the medows
+        all constrained within 1km
+        """
         self.con.create_function("distance", 4, distance)
         cur = self.con.cursor()
         cur.execute("""SELECT distance(lat_start,

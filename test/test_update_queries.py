@@ -11,6 +11,12 @@ class TestSequenceFunctions(unittest.TestCase):
         self.con = sqlite3.connect("app.db")
 
     def test_update_queries_count(self):
+        """
+        The following tests checks that the 
+        queries and procedure utilized in
+        counting paths users have submitted
+        does indeed update the database.
+        """
         query_rank = """SELECT user.path_count
                             FROM user
                             WHERE user.user = ?;
@@ -45,6 +51,11 @@ class TestSequenceFunctions(unittest.TestCase):
             assert new_count == i + 1
 
     def test_update_queries_average(self):
+        """
+        This test checks that the procedure and
+        queries used in updating the ranks via
+        averaging new inputs indeed works.
+        """
         query_rank = """SELECT user.path_count
                             FROM user
                             WHERE user.user = ?;
