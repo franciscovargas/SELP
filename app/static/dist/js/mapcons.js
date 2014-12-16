@@ -1,13 +1,17 @@
 L.mapbox.accessToken = 'pk.eyJ1IjoidmFyZ2ZyYW4iLCJhIjoiRW44bEMyQSJ9.i3kosn_djpsoR6Qy4TO0Vw#15';
+//constraining the map to just Edinburgh
 var southWest = L.latLng(55.874962, -3.404167),
     northEast = L.latLng(55.988625, -3.096550),
     bounds = L.latLngBounds(southWest, northEast);
+//obtaining maptile from mapbox + setting view to campus
 var map = L.mapbox.map('map', 'vargfran.b9bd48fd', {
 				    maxBounds: bounds,
 				    maxZoom: 19,
 				    minZoom: 10
 				}).setView([ 55.944, -3.192], 15);
 var featureGroup = L.featureGroup().addTo(map);
+//following variables are used to hide, display and
+// draw elements dynamically in the main view
 var clickCount = 0;
 var craftPath = false;
 var coords = [];
@@ -15,8 +19,6 @@ var walk = [];
 var linePresance = 0;
 var polyline = 0;
 
-
-// var circle_one = L.circle([ 55.944, -3.192], 20, circle_options).addTo(featureGroup);
 var drawControl = new L.Control.Draw({
 edit: {
   featureGroup: featureGroup
@@ -41,6 +43,7 @@ function parseLatLong(latStr){
 	return outStr;
 };
 
+// String formatting function.
 String.prototype.format = function() {
 							var formatted = this;
 							for( var arg in arguments ) {
@@ -50,27 +53,35 @@ String.prototype.format = function() {
 							};
 
 
+//Method that obtains address at every point and displays on click
+//Method responsible for displaying and hiding tabs for paht creation
 function getAddress(e){
+	//bollean vairable used to communicate conditions between the server
+	// side and the client
 	var bol = $.parseJSON(p[0]);
 	var latLong = parseLatLong(e.latlng.toString()).split(",");
+	//Reverse geocoding API
 	var api_call = "http://nominatim.openstreetmap.org/reverse?format=json&lat={0}&lon={1}&zoom=18&addressdetails=1"
 	var url = api_call.format(latLong[0],latLong[1]);
+	// counting clicks to hide and display rank entry form
 	if (craftPath) {
 		clickCount += 1;
 	}
+	//displaying rank entry form
 	if (clickCount == 2 && bol && craftPath){
 		document.getElementById('enter_edge').style.display = 'none';
 		document.getElementById('rank_in').style.display = 'block';
 		clickCount = 0;
 	    }
     else{
-    	
+    	//Hiding rank entry form
     	if(craftPath){
     		document.getElementById('rank_in').style.display = 'none';
     		document.getElementById('rank_path').style.display = 'none';
     		document.getElementById('enter_edge').style.display = 'block';}
     		coords = [];
    		}
+   		// Getting JSON addres from openstreetmaps API
 	jQuery.getJSON(url).done([function(data){
 		var address = data["display_name"];
 		if (bol && craftPath){
@@ -87,12 +98,14 @@ function getAddress(e){
 
 }
 function showEdge1(){
+	//Select mode facilities are displayed/activated
 	if(!craftPath){
 		document.getElementById('rank_path').style.display = 'none';
 		document.getElementById('enter_edge').style.display = 'block';
 		craftPath = true;
 	}
 }
+//This metod posts rank to the server to be stored in the database
 function enterRankz(){
 	if (craftPath){
 		var edgeRank = parseInt(document.getElementById('the_rank').value);
@@ -129,6 +142,9 @@ function enterRankz(){
 		}
 }
 
+
+//The random walk function requests a random walk from the front end.
+// It draws the random walk and allows the user to rank it
 function randomWalk(){
 	document.getElementById('rank_path').style.display = 'block';
 	var api_call1 = "http://nominatim.openstreetmap.org/search/{0},%20City of Edinburgh,%20Scotland,%20?format=json&addressdetails=1&limit=1&polygon_svg=1";
@@ -185,9 +201,12 @@ function randomWalk(){
        }
   });
 };
+//The delay is here to give time to the back end to post the
+// walk in the get walk route before attempting to draw.
 setTimeout(worker,1000);
 }
 
+//This is the rank submission for the generated random walks
 function submitRank(){
 	var rank_p = document.getElementById('rank_p_e').value;
 	if(rank_p > 100){
