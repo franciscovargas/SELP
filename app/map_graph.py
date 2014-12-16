@@ -1,5 +1,5 @@
 from random import uniform
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from math import fsum, acos, asin, cos, sin, pi
 
 
@@ -67,18 +67,3 @@ def decision_at_node_N(end_point_edge_weights):
             index = i + 1
     return index
 
-
-if __name__ == '__main__':
-    """
-    Structure for visual tests to be done for the dice.
-    """
-    r = uniform(0, 1.0)
-    probabilities = (20, 30)
-    test = []
-    test2 = []
-    for i in range(100000):
-        test += [decision_at_node_N(probabilities)]
-        # test2 += [decision_at_node(probabilities)]
-    n, bins, patches = plt.hist(test, normed=True)
-    # n2, bins2, patches2 = plt.hist(test2, normed=True)
-    plt.show()

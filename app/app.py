@@ -55,14 +55,14 @@ class RegistrationForm(Form):
     """
     email = EmailField('email', [
         validators.Length(min=1, max=35),
-        validators.Required()
+        validators.DataRequired()
     ])
     addr = TextField('addr', [
         validators.Length(min=1, max=35),
-        validators.Required()
+        validators.DataRequired()
     ])
     key = TextField('key', [
-        validators.Required(),
+        validators.DataRequired(),
         validators.EqualTo('key2', message='Passwords must match')
     ])
     key2 = TextField('key2')
