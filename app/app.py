@@ -183,6 +183,7 @@ class Main(views.MethodView):
                 # Ensure no ranks greater than 100
                 # enter the database
                 if float(req['rank']) <= 100:
+                    print 111
                     user = dict(session)['username']
                     query = """SELECT user.id
                                FROM user
