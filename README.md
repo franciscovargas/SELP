@@ -7,9 +7,13 @@ within edinburgh based on users ranking o streets and paths
 INSTLATION
 ====
 From DICE:
+* from the dir outside SELP
 * virtualenv --system-site-packages mapov # requires matplotlib which cannot be insalled by pip
 * source mapov/bin/activate
+* cd SELP
 * from project root directory: SELP $ pip install -e . 
+* python app/app.py
+* go to http://127.0.0.1:5000/main
 
 Other than DICE:
 *Requires matplotlib
