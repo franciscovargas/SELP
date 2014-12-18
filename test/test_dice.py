@@ -27,5 +27,16 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertFalse(raised, 'Exception raised')
 
 
+    def test_dice_ouput(self):
+        """
+        The following test inspects that the dice function
+        outputs values in the range [0,5] for a 6 choice run
+        """
+        for i in range(0,100):
+            weights2 = [randint(0,101) for i in range(0,6)]
+	    self.assertTrue(decision_at_node_N(weights2) <= 5)
+            self.assertTrue(decision_at_node_N(weights2) >= 0)
+
+
 if __name__ == '__main__':
     unittest.main()

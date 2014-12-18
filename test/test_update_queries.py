@@ -9,6 +9,7 @@ class TestSequenceFunctions(unittest.TestCase):
     def setUp(self):
 
         self.con = sqlite3.connect("app.db")
+        self.con2 = sqlite3.connect("app2.db")
 
     def test_update_queries_count(self):
         """
@@ -48,7 +49,7 @@ class TestSequenceFunctions(unittest.TestCase):
                            WHERE user=?
                         """, (user,))
             new_count = cur.fetchall()[0][0]
-            assert new_count == i + 1
+            self.assertTrue(new_count == i + 1)
 
     def test_update_queries_average(self):
         """
@@ -87,8 +88,31 @@ class TestSequenceFunctions(unittest.TestCase):
                            WHERE user=?
                         """, (user,))
             new_count = cur.fetchall()[0][0]
-            assert new_count == (float(user_rank) + float(i)) / 2.0
+            self.assertTrue(new_count == (float(user_rank) + float(i)) / 2.0)
 
+
+    def test_data_consistency(self):
+        """
+        This test checks that the procedure and
+        queries used in updating the ranks via
+        averaging new inputs indeed works.
+        """
+        query_count = """SELECT user.path_count
+                            FROM user
+                            WHERE user.user = ?;
+                         """
+	query_user = """SELECT user from user;"""
+        cur = self.con2.cursor()
+	cur.execute(query_user)
+	users = [x[0] for x in cur.fetchall()]
+        count = []
+	for user in users:
+	    cur.execute(query_count, (user,))
+            count += [cur.fetchall()[0][0]]
+	count1 = sum(count)
+        cur.execute("select count(*) from edges;")
+        count2 = cur.fetchall()[0][0]
+        self.assertTrue(count1 == count2)
 
 if __name__ == '__main__':
     unittest.main()
